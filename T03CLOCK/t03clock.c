@@ -142,8 +142,50 @@ DWORD FontColor( INT r, INT g, INT b)
   return Color;
 }
 
+VOID FlipFullScreen( HWND hWnd )
+{
+  static BOOL IsFullScreen = FALSE;
+  static RECT SaveRect;
+
+  if (!IsFullScreen)
+  {
+    HMONITOR hmon;
+    MONITORINFO mi;
+    RECT rc;
+
+    /* Save old window size and position */
+    GetWindowRect(hWnd, &SaveRect);
+    
+    /* Obtain nearest monitor */
+    hmon = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+    mi.cbSize = sizeof(mi);
+    GetMonitorInfo(hmon, &mi);
+    
+    /* Go to full screen mode */
+    rc = mi.rcMonitor;
+    AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
+
+
+    /* Expand window */
+    SetWindowPos(hWnd, HWND_TOP,
+      rc.left, rc.top,
+      rc.right - rc.left,
+      rc.bottom - rc.top,
+      SWP_NOOWNERZORDER);
+  }
+  else
+    /* Restore from full screen mode */
+    SetWindowPos(hWnd, HWND_TOP,
+      SaveRect.left, SaveRect.top,
+      SaveRect.right - SaveRect.left,
+      SaveRect.bottom - SaveRect.top,
+      SWP_NOOWNERZORDER);
+  IsFullScreen = !IsFullScreen;
+}
+
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
+  static MINMAXINFO *minmax;
   static INT Clocks = 0;
   static CHAR TextStr[256];
   static HFONT hFont;
@@ -162,17 +204,22 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   switch (Msg)
   {
   case WM_CREATE:
+    /* Initialising DCs */
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
     hClockDC = CreateCompatibleDC(hDC);
     
+    /* Initialising Clock */
     hClockBM = LoadImage(NULL, "Clock.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
     SelectObject(hClockDC, hClockBM);
     GetObject(hClockBM, sizeof(BITMAP), &ClockBM);
 
+    /* Creating font */
     hFont = CreateFont(80, 0, 0, 0, FW_HEAVY, FALSE, FALSE, FALSE, RUSSIAN_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DFA_DISABLE, FALSE, FF_DONTCARE, "");
     SelectObject(hMemDC, hFont);
+    SetBkMode(hMemDC, TRANSPARENT);
 
+    /* Clean up */
     ReleaseDC(hWnd, hDC);
     SetTimer(hWnd, RAND_NUM, TIMER_MS, NULL);
     return 0;
@@ -180,8 +227,9 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     W = LOWORD(lParam);
     H = HIWORD(lParam);
 
+    /* Initialising bitmap for MemDC */
     if (hBM != NULL)
-      DeleteObject(hBM);
+      DeleteObject(hBM); 
     hDC = GetDC(hWnd);
     hBM = CreateCompatibleBitmap(hDC, W, H);
     ReleaseDC(hWnd, hDC);
@@ -199,12 +247,12 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_ERASEBKGND:
     return 1;
   case WM_TIMER:
-    // Clean up
+    /* Clean up */
     SetColor(hMemDC, 255, 255, 255);
     Rectangle(hMemDC, 0, 0, W, H);
     StretchBlt(hMemDC, (W - ClockBM.bmWidth * 3) / 2, (H - ClockBM.bmHeight * 3) / 2, ClockBM.bmWidth * 3, ClockBM.bmHeight * 3, hClockDC, 0, 0, ClockBM.bmWidth, ClockBM.bmHeight, SRCCOPY);
    
-    // Adding hands
+    /* Adding hands */
     GetLocalTime(&tm);
     SetColor(hMemDC, 170, 170, 170);
     DrawPolygon(hMemDC, W / 2, H / 2, ((DOUBLE)tm.wSecond + pow(tm.wMilliseconds / 800.0, 8) / DPI) / 60 * DPI, SecondHandPts, sizeof(SecondHandPts) / sizeof(POINT));
@@ -213,18 +261,17 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     SetColor(hMemDC, 240, 240, 240);
     DrawPolygon(hMemDC, W / 2, H / 2, (DOUBLE)(tm.wHour + tm.wMinute / 60.0) / 12 * DPI, HourHandPts, sizeof(HourHandPts) / sizeof(POINT));
 
-    // Adding text
-    SetBkMode(hMemDC, TRANSPARENT);
+    /* Adding text */
     for (Y = -3; Y <= 3; Y++)
       for (X = -3; X <= 3; X++)
       {
-        SetTextColor(hMemDC, FontColor(rand() % 120 + 90, rand() % 120, rand() % 120));
+        SetTextColor(hMemDC, FontColor(rand() % 40 + 90, rand() % 40, rand() % 40));
         TextOut(hMemDC, 400 + X + rand() % 8 - 2 + (INT)(10 * sin(Clocks / 20.0)), 900 + Y + rand() % 8 - 2 + (INT)(10 * sin(Clocks / 10.0)), TextStr, wsprintf(TextStr, "DOOMSDAY TIMER: %.2d:%.2d:%.2d", rand() % 24, rand() % 60, rand() % 60));
       }
     SetTextColor(hMemDC, FontColor(0, 0, 0));
     TextOut(hMemDC, 400 + (INT)(5 * sin(Clocks / 20.0)), 900 + (INT)(5 * sin(Clocks / 10.0)), TextStr, wsprintf(TextStr, "DOOMSDAY TIMER: %.2d:%.2d:%.2d", 23 - tm.wHour, 59 - tm.wMinute, 59 - tm.wSecond));
 
-    // Finishing
+    /* Finishing */
     Clocks++;
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
@@ -233,6 +280,13 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     BitBlt(hDC, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
     EndPaint(hWnd, &ps);
     return 0;
+  case WM_GETMINMAXINFO:
+    minmax = (MINMAXINFO *)lParam;
+    minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYBORDER) * 2;
+    return 0;
+  case WM_KEYDOWN:
+    if (wParam == VK_F1)
+      FlipFullScreen(hWnd);
   }
 
   return DefWindowProc(hWnd, Msg, wParam, lParam);
