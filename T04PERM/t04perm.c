@@ -3,70 +3,87 @@
  * DATE: 04.06.2026
  * PURPOSE: Print all possible variants.
  */
+#include <windows.h>
 #include <stdio.h>
-#include <math.h>
 #include <conio.h>
-#define NUM_SIZE 4
+#define NUM_SIZE 7
 
-int real_nums[NUM_SIZE];
-int relocations_count = 0;
+INT Numbers[NUM_SIZE];
 
-void Swap( int *a, int *b )
+VOID Swap( INT *a, INT *b )
 {
-  int t = *a;
+  INT t = *a;
   *a = *b;
   *b = t;
 }
 
-void PrintNums( void )
+INT IsEven( VOID )
 {
-  static count = 0;
-  int i;
+  INT i, j, Disorders = 0;
 
-  FILE *file = fopen("Positions.txt", "a");
-  if (file == NULL)
-    return;
+  for (i = 0; i < NUM_SIZE; i++)
+    for (j = i + 1; j < NUM_SIZE; j++)
+      Disorders += Numbers[i] > Numbers[j];
 
-  count++;
-  fprintf(file, "%.2i: [", count);
-  printf("%.2i: [", count);
-  for (i = 0; i < NUM_SIZE - 1; i++)
-  {
-    fprintf(file, "%i, ", real_nums[i]);
-    printf("%i, ", real_nums[i]);
-  }
-  fprintf(file, "%i] - %s\n", real_nums[i], relocations_count % 2 == 0 ? "not even" : "even");
-  printf("%i] - %s\n", real_nums[i], relocations_count % 2 == 0 ? "not even" : "even");
-
-  fclose(file);
+  return Disorders % 2;
 }
 
-void For( int *nums, int size )
+VOID PrintNums( VOID )
 {
-  int i;
+  static Count = 0;
+  INT i;
+
+  FILE *File = fopen("Positions.txt", "a");
+  if (File == NULL)
+    return;
+
+  Count++;
+  fprintf(File, "%.2i: [", Count);
+  printf("%.2i: [", Count);
+  for (i = 0; i < NUM_SIZE - 1; i++)
+  {
+    fprintf(File, "%i, ", Numbers[i]);
+    printf("%i, ", Numbers[i]);
+  }
+  fprintf(File, "%i] - %s\n", Numbers[i], IsEven() ? "not even" : "even");
+  printf("%i] - %s\n", Numbers[i], IsEven() ? "not even" : "even");
+
+  fclose(File);
+}
+
+VOID For( INT *pNumbers, INT size )
+{
+  INT i;
 
   if (size <= 1)
     return;
 
   for (i = 0; i < size; i++)
   {
-    Swap(nums, nums + i);
-    relocations_count++;
-    PrintNums();
-    For(nums + 1, size - 1);
-    Swap(nums, nums + i);
-    relocations_count++;
+    Swap(pNumbers, pNumbers + i);
+    if (size < 3)
+      PrintNums();
+    For(pNumbers + 1, size - 1);
+    Swap(pNumbers, pNumbers + i);
   }
 }
 
-void main( void )
+VOID ClearFile( VOID )
 {
-  int i;
+  FILE *File = fopen("Positions.txt", "w");
+  if (File != NULL)
+    fclose(File);
+}
+
+VOID main( VOID )
+{
+  INT i;
 
   for (i = 0; i < NUM_SIZE; i++)
-    real_nums[i] = i + 1;
+    Numbers[i] = i + 1;
 
-  For(real_nums, NUM_SIZE);
+  ClearFile();
+  For(Numbers, NUM_SIZE);
   
   _getch();
 }
