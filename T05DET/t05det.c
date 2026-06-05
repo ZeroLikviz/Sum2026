@@ -1,7 +1,7 @@
-/* FILE NAME: t04perm.c
+/* FILE NAME: t05det.c
  * PROGRAMMER: TM5
  * DATE: 04.06.2026
- * PURPOSE: Print all possible variants.
+ * PURPOSE: Calculate matrix determinant.
  */
 #include <windows.h>
 #include <stdio.h>
@@ -56,7 +56,7 @@ VOID For( INT *pNumbers, INT size )
       PDeterminant = 1;
       for (j = 0; j < MatrixSize; j++)
         PDeterminant *= Matrix[j][Numbers[j] - 1];
-      Determinant += PDeterminant * IsEven();
+      Determinant += PDeterminant * (IsEven() * 2 - 1);
     }
     For(pNumbers + 1, size - 1);
     Swap(pNumbers, pNumbers + i);
