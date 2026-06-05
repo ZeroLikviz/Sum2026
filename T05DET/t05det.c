@@ -6,7 +6,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <conio.h>
-#define MATRIX_MAX_SIZE 6
+#include <time.h>
+#define MATRIX_MAX_SIZE 10
 
 INT Numbers[MATRIX_MAX_SIZE];
 INT Matrix[MATRIX_MAX_SIZE][MATRIX_MAX_SIZE];
@@ -65,7 +66,7 @@ VOID For( INT *pNumbers, INT size )
 
 INT main( VOID )
 {
-  INT i, j;
+  INT i, j, t1, t2;
   FILE *fMatrix = fopen("IN.TXT", "r");
   if (fMatrix == NULL)
     return 0;
@@ -84,14 +85,21 @@ INT main( VOID )
   for (i = 0; i < MatrixSize; i++)
   {
     for (j = 0; j < MatrixSize; j++)
-      printf("%i ", Matrix[i][j]);
+      printf("%4i", Matrix[i][j]);
     printf("\n");
   }
 
   fclose(fMatrix);  
 
-  For(Numbers, MatrixSize);
-  printf("Det: %i", Determinant);
+  t1 = clock();
+  for (i = 0; i < 100; i++)
+    For(Numbers, MatrixSize);
+  t2 = clock();
 
+
+  printf("Det: %i\n", Determinant);
+  printf("Time: %f\n s", (DOUBLE)(t2 - t1) / CLOCKS_PER_SEC / 100);
+
+  _getch();
   _getch();
 }
