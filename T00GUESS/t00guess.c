@@ -22,7 +22,7 @@ void main( void )
     }
     else
     {
-      sprintf(s, "Is it lesser than %i?", m);
+      sprintf(s, "Is it smaller than %i?", m);
       q = -1;
     }
       
