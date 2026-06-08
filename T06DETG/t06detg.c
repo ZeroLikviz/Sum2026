@@ -15,37 +15,41 @@ struct tagMatrix
 {
   DOUBLE **Values;
   DOUBLE Determinant;
-  INT Size;
+  INT Rows;
+  INT Cols;
 };
 typedef struct tagMatrix MATRIX;
 
 
 /* Creates MATRIX instance */
-MATRIX MatrixCreate( INT Size )
+MATRIX MatrixCreate( INT Rows, INT Cols )
 {
   INT i;
   MATRIX NewMatrix;
 
-  NewMatrix.Size = Size;
+  NewMatrix.Rows = Rows;
+  NewMatrix.Cols = Cols;
   NewMatrix.Determinant = 1;
 
-  if (Size > 0)
+  if (Rows * Cols > 0)
   {
-    NewMatrix.Values = malloc(sizeof(DOUBLE *) * Size);
+    NewMatrix.Values = malloc(sizeof(DOUBLE *) * Rows);
     if (NewMatrix.Values == NULL)
     {
-      NewMatrix.Size = 0;
-      printf("ERROR: Couldn't create matrix.");
+      NewMatrix.Rows = 0;
+      NewMatrix.Cols = 0;
+      printf("ERROR: Couldn't create matrix.\n");
       return NewMatrix;
     }
 
-    for (i = 0; i < Size; i++)
+    for (i = 0; i < Cols; i++)
     {
-      NewMatrix.Values[i] = malloc(sizeof(DOUBLE) * Size);
+      NewMatrix.Values[i] = malloc(sizeof(DOUBLE) * Cols);
       if (NewMatrix.Values[i] == NULL)
       {
-        NewMatrix.Size = 0;
-        printf("ERROR: Couldn't create matrix.");
+        NewMatrix.Rows = 0;
+        NewMatrix.Cols = 0;
+        printf("ERROR: Couldn't create matrix.\n");
       }
     }
   };
@@ -58,13 +62,14 @@ MATRIX MatrixCreate( INT Size )
 VOID MatrixFree( MATRIX *Matrix )
 {
   INT i;
-  if (Matrix->Size == 0)
+  if (Matrix->Rows * Matrix->Cols == 0)
     return;
 
-  for (i = 0; i < Matrix->Size; i++)
+  for (i = 0; i < Matrix->Rows; i++)
     free(Matrix->Values[i]);
   free(Matrix->Values);
-  Matrix->Size = 0;
+  Matrix->Rows = 0;
+  Matrix->Cols = 0;
 } /* End of 'MatrixFree' function */
 
 
@@ -73,35 +78,36 @@ VOID MatrixCopy( MATRIX *MDest, MATRIX *MSrc )
 {
   INT i, j;
   
-  if (MDest->Size != MSrc->Size)
+  if (MDest->Rows != MSrc->Rows || MDest->Cols != MSrc->Cols)
   {
   	MatrixFree(MDest);
-  	*MDest = MatrixCreate(MSrc->Size);
+  	*MDest = MatrixCreate(MSrc->Rows, MSrc->Cols);
   }
   
   MDest->Determinant = MSrc->Determinant;
-  if (MSrc->Size > 0)
-    for (i = 0; i < MSrc->Size; i++)
-      for (j = 0; j < MSrc->Size; j++)
+  if (MSrc->Rows * MSrc->Cols > 0)
+    for (i = 0; i < MSrc->Rows; i++)
+      for (j = 0; j < MSrc->Cols; j++)
         MDest->Values[i][j] = MSrc->Values[i][j];
 } /* End of 'MatrixCopy' function */
 
 
 /* Loads values into MATRIX instance from file */
-VOID MatrixLoad( MATRIX *Matrix, CHAR *FileName )
+VOID MatrixLoadSquare( MATRIX *Matrix, CHAR *FileName )
 {
   INT Size, i, j;
   FILE *MatrixFile = fopen(FileName, "r");
   if (MatrixFile == NULL)
   {
-    Matrix->Size = 0;
-    printf("ERROR: Couldn't open file \"%s\".", FileName);
+    Matrix->Rows = 0;
+    Matrix->Cols = 0;
+    printf("ERROR: Couldn't open file \"%s\".\n", FileName);
     return;
   }
 
   fscanf(MatrixFile, "%i", &Size);
   MatrixFree(Matrix);
-  *Matrix = MatrixCreate(Size);
+  *Matrix = MatrixCreate(Size, Size);
 
   for (i = 0; i < Size; i++)
     for (j = 0; j < Size; j++)
@@ -116,10 +122,10 @@ VOID MatrixPrint( MATRIX *Matrix )
 {
   int i, j;
 
-  for (i = 0; i < Matrix->Size; i++)
+  for (i = 0; i < Matrix->Rows; i++)
   {
-    for (j = 0; j < Matrix->Size; j++)
-      printf("%8.3f", Matrix->Values[i][j]);
+    for (j = 0; j < Matrix->Cols; j++)
+      printf("%8.4f", Matrix->Values[i][j]);
     printf("\n");
   }
   printf("\n");
@@ -142,7 +148,7 @@ VOID MatrixSwapVertical( MATRIX *Matrix, INT A, INT B )
 {
   INT i;
 
-  for (i = 0; i < Matrix->Size; i++)
+  for (i = 0; i < Matrix->Rows; i++)
     Swap(&(Matrix->Values[i][A]), &(Matrix->Values[i][B]));
 } /* End of 'MatrixSwapVertical' function */
 
@@ -152,7 +158,7 @@ VOID MatrixSwapHorizontal( MATRIX *Matrix, INT A, INT B )
 {
   INT i;
 
-  for (i = 0; i < Matrix->Size; i++)
+  for (i = 0; i < Matrix->Cols; i++)
     Swap(&(Matrix->Values[A][i]), &(Matrix->Values[B][i]));
 } /* End of 'MatrixSwapHorizontal' function */
 
@@ -163,8 +169,8 @@ POINT MatrixFindMax( MATRIX *Matrix, INT hOffset, INT vOffset )
   INT i, j;
   POINT Point = {hOffset, vOffset};
 
-  for (i = vOffset; i < Matrix->Size; i++)
-    for (j = hOffset; j < Matrix->Size; j++)
+  for (i = vOffset; i < Matrix->Rows; i++)
+    for (j = hOffset; j < Matrix->Cols; j++)
       if (fabs(Matrix->Values[Point.y][Point.x]) < fabs(Matrix->Values[i][j]))
       {
         Point.y = i;
@@ -180,7 +186,7 @@ VOID MatrixAddLineToLine( MATRIX *Matrix, INT from, INT to, DOUBLE Coefficent )
 {
   INT i;
 
-  for (i = 0; i < Matrix->Size; i++)
+  for (i = 0; i < Matrix->Cols; i++)
   {
     Matrix->Values[to][i] = Matrix->Values[to][i] + Matrix->Values[from][i] * Coefficent;
   }
@@ -193,8 +199,14 @@ VOID MatrixCalculateDeterminant( MATRIX *Matrix )
   POINT MaxPt;
   INT i, j;
 
+  if (Matrix->Rows != Matrix->Cols)
+  {
+    printf("ERROR: Trying to calculate determinant of nonsquare matrix.\n");
+    return;
+  }
+
   Matrix->Determinant = 1;
-  for (i = 0; i < Matrix->Size; i++)
+  for (i = 0; i < Matrix->Rows; i++)
   {
     /* Getting largest by absolute value elements on the diagonal */
     MaxPt = MatrixFindMax(Matrix, i, i);
@@ -212,7 +224,7 @@ VOID MatrixCalculateDeterminant( MATRIX *Matrix )
     }
 
     /* Zeroing columns to make a triangular matrix */
-    for (j = i + 1; j < Matrix->Size; j++)
+    for (j = i + 1; j < Matrix->Rows; j++)
       MatrixAddLineToLine(Matrix, i, j, -Matrix->Values[j][i] / Matrix->Values[i][i]);
   }
 } /* End of 'MatrixCalculateDeterminant' function */
@@ -221,19 +233,21 @@ VOID MatrixCalculateDeterminant( MATRIX *Matrix )
 /* Counts time needed to calculate determinant of matrix from file IN.TXT */
 VOID TimeTest( VOID )
 {
-  MATRIX Matrix = MatrixCreate(0);
+  MATRIX Matrix = MatrixCreate(0, 0);
+  MATRIX MatrixBuffer = MatrixCreate(0, 0);
   INT Time1, Time2, i, TotalClocks = 0, Iterations = 10000;
 
+  MatrixLoadSquare(&MatrixBuffer, "IN.TXT");
   for (i = 0; i < Iterations; i++)
   {
-    MatrixLoad(&Matrix, "IN.TXT");
+    MatrixCopy(&Matrix, &MatrixBuffer);
     Time1 = clock();
     MatrixCalculateDeterminant(&Matrix);
     Time2 = clock();
     TotalClocks += Time2 - Time1;
   }
-
-  MatrixPrint(&Matrix);
+  
+  MatrixPrint(&MatrixBuffer);
   printf("Determinant: %.2f\n", Matrix.Determinant);
   printf("Time: %.8f microseconds", (DOUBLE)(TotalClocks) / CLOCKS_PER_SEC * 1000000 / Iterations);
   MatrixFree(&Matrix);
@@ -263,8 +277,8 @@ BOOL StringHas( CHAR *String, CHAR *Has, INT StringSize, INT HasSize )
 /* Tries to find a matrix with provided determinant searching through random matrixes */
 VOID FindMatrix( INT Size, INT Determinant )
 {
-  MATRIX Matrix = MatrixCreate(Size);
-  MATRIX MatrixBuffer = MatrixCreate(Size);
+  MATRIX Matrix = MatrixCreate(Size, Size);
+  MATRIX MatrixBuffer = MatrixCreate(Size, Size);
   INT i, j, HasSize;
   CHAR DeterminantString[256];
   CHAR HasString[256];
@@ -303,8 +317,8 @@ DOUBLE PowApprox( DOUBLE X )
 /* Tries to find a matrix with provided determinant through step by step improvements */
 VOID FindMatrixApprox( INT Size, DOUBLE Determinant )
 {
-  MATRIX Matrix = MatrixCreate(Size);
-  MATRIX MatrixBuffer = MatrixCreate(Size);
+  MATRIX Matrix = MatrixCreate(Size, Size);
+  MATRIX MatrixBuffer = MatrixCreate(Size, Size);
   INT GiveUpCounter = 20000 / Size;
   INT i, j;
   DOUBLE Rate = pow(10, -PowApprox(Size));
@@ -349,17 +363,17 @@ VOID FindMatrixApprox( INT Size, DOUBLE Determinant )
 MATRIX MatrixMultiply( MATRIX *A, MATRIX *B )
 {
   INT i, j, k;
-  MATRIX Product = MatrixCreate(0);
+  MATRIX Product = MatrixCreate(0, 0);
   
-  if (A->Size != B->Size)
+  if (A->Cols != B->Rows)
     return Product;
   
-  Product = MatrixCreate(A->Size);
-  for (i = 0; i < A->Size; i++)
-    for (j = 0; j < A->Size; j++)
+  Product = MatrixCreate(A->Rows, B->Cols);
+  for (i = 0; i < A->Rows; i++)
+    for (j = 0; j < B->Cols; j++)
     {
       Product.Values[i][j] = 0;
-      for (k = 0; k < A->Size; k++)
+      for (k = 0; k < A->Cols; k++)
         Product.Values[i][j] += A->Values[i][k] * B->Values[k][j];
     }
   
@@ -368,36 +382,42 @@ MATRIX MatrixMultiply( MATRIX *A, MATRIX *B )
 
 
 /* Calculates algebraic complement and minor */
-DOUBLE MatrixCalculateMinorAndSign( MATRIX *Matrix, INT i, INT j )
+DOUBLE MatrixCalculateMinor( MATRIX *Matrix, INT i, INT j )
 {
-  MATRIX sMatrix = MatrixCreate(Matrix->Size - 1);
+  MATRIX sMatrix = MatrixCreate(Matrix->Rows - 1, Matrix->Cols - 1);
   INT si, sj, ni, nj;
   DOUBLE Determinant;
   
-  for (ni = 0, si = 0; ni < Matrix->Size; si += ni != i, ni++)
-    for (nj = 0, sj = 0; nj < Matrix->Size; sj += nj != j, nj++)
+  for (ni = 0, si = 0; ni < Matrix->Rows; si += ni != i, ni++)
+    for (nj = 0, sj = 0; nj < Matrix->Cols; sj += nj != j, nj++)
       if (ni != i && nj != j)
         sMatrix.Values[si][sj] = Matrix->Values[ni][nj];
   MatrixCalculateDeterminant(&sMatrix);
   Determinant = sMatrix.Determinant;
   MatrixFree(&sMatrix);
   
-  return Determinant * pow(-1, i + j);
+  return Determinant;
 } /* End of 'MatrixCalculateMinorAndSign' function */
 
 
 /* Calculates reverse matrix for provided one */
 MATRIX MatrixFindReverse( MATRIX *Matrix )
 {
-  INT i, j, si, sj;
-  MATRIX Reverse = MatrixCreate(Matrix->Size);
-  MATRIX MatrixBuffer = MatrixCreate(Matrix->Size);
+  INT i, j;
+  MATRIX Reverse = MatrixCreate(Matrix->Rows, Matrix->Cols);
+  MATRIX MatrixBuffer = MatrixCreate(Matrix->Rows, Matrix->Cols);
   
+  if (Matrix->Rows != Matrix->Cols)
+  {
+    printf("ERROR: Trying to calculate reverse matrix of nonsquare matrix.\n");
+    return Reverse;
+  }
+
   MatrixCopy(&MatrixBuffer, Matrix);
   MatrixCalculateDeterminant(&MatrixBuffer);
-  for (i = 0; i < Matrix->Size; i++)
-    for (j = 0; j < Matrix->Size; j++)
-      Reverse.Values[j][i] = MatrixCalculateMinorAndSign(Matrix, i, j) / MatrixBuffer.Determinant;
+  for (i = 0; i < Matrix->Rows; i++)
+    for (j = 0; j < Matrix->Cols; j++)
+      Reverse.Values[j][i] = MatrixCalculateMinor(Matrix, i, j) * pow(-1, i + j) / MatrixBuffer.Determinant;
   MatrixFree(&MatrixBuffer);
   
   return Reverse;
@@ -407,7 +427,7 @@ MATRIX MatrixFindReverse( MATRIX *Matrix )
 /* Generates matrix filled with random values */
 MATRIX MatrixGenerateRandomMatrix( INT Size )
 {
-  MATRIX Matrix = MatrixCreate(Size);
+  MATRIX Matrix = MatrixCreate(Size, Size);
   INT i, j;
   
   srand(clock());
@@ -421,20 +441,25 @@ MATRIX MatrixGenerateRandomMatrix( INT Size )
 
 INT main( VOID )
 {
-	/* FindMatrix(12, 3740374037); */
-	/* TimeTest(); */
-	MATRIX Matrix = MatrixGenerateRandomMatrix(4);
-	MATRIX Reverse = MatrixFindReverse(&Matrix);
-	MATRIX Product = MatrixMultiply(&Matrix, &Reverse);
-	
-	MatrixPrint(&Matrix);
-	MatrixPrint(&Reverse);
-	MatrixPrint(&Product);
-	
-	MatrixFree(&Matrix);
-	MatrixFree(&Reverse);
-	MatrixFree(&Product);
-	
-	return 0;
+  /* FindMatrix(12, 1234); */
+  /* FindMatrixApprox(15, 4730473047.5); */
+  /*
+  MATRIX Matrix = MatrixGenerateRandomMatrix(4);
+  MATRIX Reverse = MatrixFindReverse(&Matrix);
+  MATRIX Product = MatrixMultiply(&Matrix, &Reverse);
+
+  MatrixPrint(&Matrix);
+  MatrixPrint(&Reverse);
+  MatrixPrint(&Product);
+
+  MatrixFree(&Matrix);
+  MatrixFree(&Reverse);
+  MatrixFree(&Product);
+  */
+
+  TimeTest();
+  _getch();
+
+  return 0;
 }
 /* END OF 't06detg.c' FILE */

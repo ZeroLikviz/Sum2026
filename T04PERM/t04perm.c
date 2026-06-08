@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <conio.h>
-#define NUM_SIZE 7
+#define NUM_SIZE 4
 
 INT Numbers[NUM_SIZE];
 

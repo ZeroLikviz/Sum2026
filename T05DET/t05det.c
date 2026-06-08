@@ -92,13 +92,13 @@ INT main( VOID )
   fclose(fMatrix);  
 
   t1 = clock();
-  for (i = 0; i < 100; i++)
+  for (i = 0; i < 1000; i++)
     For(Numbers, MatrixSize);
   t2 = clock();
 
 
   printf("Det: %i\n", Determinant);
-  printf("Time: %f\n s", (DOUBLE)(t2 - t1) / CLOCKS_PER_SEC / 100);
+  printf("Time: %f s\n", (DOUBLE)(t2 - t1) / CLOCKS_PER_SEC / 1000);
 
   _getch();
   _getch();
