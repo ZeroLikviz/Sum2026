@@ -7,9 +7,8 @@
 #include <math.h>
 #include "globe.h"
 #include "mth.h"
-#define HIDE_MARGIN 0.2
-#define GLB_GRID_H 40
-#define GLB_GRID_W 40
+#define GLB_GRID_H 60
+#define GLB_GRID_W 60
 #define WRAP_H(X) ((X) % GLB_GRID_H)
 #define WRAP_W(X) ((X) % GLB_GRID_W)
 INT GLB_Ws;
@@ -38,7 +37,7 @@ VOID GLB_Init( DOUBLE R )
 {
   INT i, j;
   DOUBLE Phi, Theta;
-  static DOUBLE a = 0.3, b = 0.3 ;
+  static DOUBLE a = 0.3, b = 0.3;
   a += 0.050 * sin(Timer * 5);
   b += 0.050 * sin(Timer * 5);
 
@@ -50,15 +49,26 @@ VOID GLB_Init( DOUBLE R )
       GLB_Globe[i][j].Z = R * Pow(sin(Theta), b) * Pow(cos(Phi), a);
     }
   
-  for (i = 0; i < GLB_GRID_H - 1; i++)
+  for (i = 0; i < GLB_GRID_H; i++)
     for (j = 0; j < GLB_GRID_W; j++)
+      GLB_Normals[i][j] = VecSet3(0, 0, 0);
+    
+  for (i = 0; i < GLB_GRID_H - 1; i++)
+    for (j = 0; j < GLB_GRID_W - 1; j++)
     {
       VEC3 Vec1 = VecSubVec3(GLB_Globe[i][j], GLB_Globe[i + 1][j]);
-      VEC3 Vec2 = VecSubVec3(GLB_Globe[i + 1][j], GLB_Globe[i + 1][WRAP_W(j + 1)]);
+      VEC3 Vec2 = VecSubVec3(GLB_Globe[i + 1][j], GLB_Globe[i + 1][j + 1]);
       VEC3 Cross = VecCross3(Vec1, Vec2);
       Cross = VecMulNum3(Cross, 1.0 / VecLen3(Cross));
-      GLB_Normals[i][j] = Cross;
+      GLB_Normals[i][j] = VecAddVec3(GLB_Normals[i][j], Cross);
+      GLB_Normals[i][j + 1] = VecAddVec3(GLB_Normals[i][j + 1], Cross);
+      GLB_Normals[i + 1][j] = VecAddVec3(GLB_Normals[i + 1][j], Cross);
+      GLB_Normals[i + 1][j + 1] = VecAddVec3(GLB_Normals[i + 1][j + 1], Cross);
     }
+
+  for (i = 0; i < GLB_GRID_H; i++)
+    for (j = 0; j < GLB_GRID_W; j++)
+      GLB_Normals[i][j] = VecMulNum3(GLB_Normals[i][j], 1.0 / VecLen3(GLB_Normals[i][j]));
 } /* End of 'GLB_Init' file */
 
 
@@ -82,7 +92,7 @@ VOID GLB_Resize( INT W, INT H )
 
 VOID CalcMatrixes( VOID )
 {
-  MATR RX = MatrRotateX(270 * sin(Timer));
+  MATR RX = MatrRotateX(270 * sin(Timer) + 90);
   MATR RY = MatrRotateY(90 * sin(4 * Timer));
   MATR RZ = MatrRotateZ(180 * cos(Timer));
   MATR R = MatrMulMatr(MatrMulMatr(RY, RX), RZ);
@@ -125,12 +135,21 @@ VOID GLB_Draw( HDC hDC )
   for (i = 0; i < GLB_GRID_H - 1; i++)
     for (j = 0; j < GLB_GRID_W - 1; j++)
     {
+      INT r = 255;
+      INT g = 255;
+      INT b = 255;
       DBL Factor = VecDot3(ApplyNormal(GLB_Normals[i][j]), VecSet3(0, 0, -1));
-      if (Factor > -0.2)
+      if (Factor > -0.28)
         continue;
-      Factor = fabs(Factor);
-      SetDCPenColor(hDC, RGB(255 * Factor, 180 * Factor, 0 * Factor));
-      SetDCBrushColor(hDC, RGB(255 * Factor, 180 * Factor, 0 * Factor));
+      Factor = pow(fabs(Factor), 20);
+      Factor = pow(Factor, 0.3);
+      if (Factor > 0.3 && Factor < 0.5)
+        Factor = 1 - Factor;
+      else if (Factor < 0.3)
+        Factor = pow(Factor, Factor);
+        
+      SetDCPenColor(hDC, RGB(r * Factor, g * Factor, b * Factor));
+      SetDCBrushColor(hDC, RGB(r * Factor, g * Factor, b * Factor));
       Face[0] = Projections[i][j];
       Face[1] = Projections[i][j + 1];
       Face[2] = Projections[i + 1][j + 1];
