@@ -1,6 +1,6 @@
 /* FILE NAME: mth.c
  * PROGRAMMER: TM5
- * DATE: 08.06.2026
+ * DATE: 09.06.2026
  * PURPOSE: Implementing matrix math.
  */
 #include <windows.h>
@@ -329,26 +329,19 @@ MATR MatrView( VEC3 Loc, VEC3 At, VEC3 Up1 )
   return NewMatrix;
 };
 
-MATR MatrOrtho( DBL Left, DBL Right, DBL Top, DBL Bottom, DBL Near, DBL Far )
+MATR MatrFrustum( DBL Left, DBL Right, DBL Bottom, DBL Top, DBL Near, DBL Far )
 {
-  MATR NewMatrix = MatrIdentity();
-
-  NewMatrix.Values[0][0] = (Right - Left) / 2; 
-  NewMatrix.Values[3][0] = (Right - Left) / 2;
-  NewMatrix.Values[1][1] = (Top - Bottom);
-  NewMatrix.Values[3][1] = (Bottom - Top) / 2;
+  MATR NewMatrix =
+  {
+    {
+      {2 * Near / (Right - Left), 0, 0, 0},
+      {0, 2 * Near / (Top - Bottom), 0, 0},
+      {(Right + Left) / (Right - Left), (Top + Bottom) / (Top - Bottom), -(Far + Near) / (Far - Near), -1},
+      { 0, 0, -2 * Near * Far / (Far - Near), 0}
+    }
+  };
 
   return NewMatrix;
-}
-
-MATR MatrFrustum( DBL Left, DBL Right, DBL Top, DBL Bottom, DBL Near, DBL Far )
-{
-  MATR NewMatrix = MatrIdentity();
- 
-  NewMatrix.Values[2][0] = (Left - Right) / Near;
-  NewMatrix.Values[3][1] = (Bottom - Top) / Near;
-
-  return MatrMulMatr(NewMatrix, MatrOrtho(Left, Right, Top, Bottom, Near, Far));
 }
 
 VOID PrintMatrix( HDC hDC, MATR Matrix )

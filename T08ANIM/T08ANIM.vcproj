@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="T07GLOBE"
-	ProjectGUID="{2E51F6AB-36B2-42A7-A892-FE191F13713B}"
-	RootNamespace="T07GLOBE"
+	Name="T08ANIM"
+	ProjectGUID="{2E23E494-19BD-4917-970F-10C9AB6C669F}"
+	RootNamespace="T08ANIM"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="out\$(ConfigurationName)"
+			IntermediateDirectory="out\$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			CharacterSet="2"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(OPENAL_DIR)Include;"
+				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(OPENAL_DIR)Include;.\src;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -179,39 +179,55 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\globe.c"
+				RelativePath=".\src\def.h"
 				>
 			</File>
-			<File
-				RelativePath=".\mth.c"
+			<Filter
+				Name="Math Support"
 				>
-			</File>
-			<File
-				RelativePath=".\t07globe.c"
+				<File
+					RelativePath=".\src\mth\mth.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\mth\mth.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Animation System"
 				>
-			</File>
-			<File
-				RelativePath=".\timer.c"
+				<File
+					RelativePath=".\src\anim\rnd\rnd.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\rnd\rndbase.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\rnd\rnddata.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\rnd\rndprim.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Windows Depended"
 				>
-			</File>
+				<File
+					RelativePath=".\src\win\main.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\globe.h"
-				>
-			</File>
-			<File
-				RelativePath=".\mth.h"
-				>
-			</File>
-			<File
-				RelativePath=".\timer.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

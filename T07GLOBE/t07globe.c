@@ -4,11 +4,13 @@
  * PURPOSE: Trying 3D.
  */
 #include <windows.h>
+#include <stdio.h>
 #include <math.h>
 #include "globe.h"
+#include "timer.h"
 #define WND_CLASS_NAME "CSID:002959"
-#define RAND_NUM 7626
-#define TIMER_MS 14
+#define TIMER_NUM 7626
+#define TIMER_MS 16
 
 
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
@@ -42,11 +44,15 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
   ShowWindow(hWnd, ShowCmd);
 
   // Main Loop //
-  while (GetMessage(&msg, NULL, 0, 0))
-  {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
-  }
+  while (TRUE)
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    {
+      if (msg.message == WM_QUIT)
+        break;
+      DispatchMessage(&msg);
+    }
+    else
+      SendMessage(hWnd, WM_TIMER, TIMER_NUM, 0);
   return 0;
 }
 
@@ -72,7 +78,6 @@ VOID FlipFullScreen( HWND hWnd )
     /* Go to full screen mode */
     rc = mi.rcMonitor;
     AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
-
 
     /* Expand window */
     SetWindowPos(hWnd, HWND_TOP,
@@ -104,6 +109,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   static HDC hMemDC;
   static HBITMAP hBM;
   static BITMAP ClockBM;
+  CHAR FPSString[128];
   PAINTSTRUCT ps;
   HDC hDC;
 
@@ -115,11 +121,11 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     hMemDC = CreateCompatibleDC(hDC);
     
     /* Initialising Globe*/
-    GLB_Init(0.8);
+    GLB_Init(0.5);
 
     /* Clean up */
     ReleaseDC(hWnd, hDC);
-    SetTimer(hWnd, RAND_NUM, TIMER_MS, NULL);
+    SetTimer(hWnd, TIMER_NUM, TIMER_MS, NULL);
     return 0;
   case WM_SIZE:
     W = LOWORD(lParam);
@@ -127,6 +133,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
     /* Initialising GLB values */
     GLB_Resize(W, H);
+    TimerInit(); 
 
     /* Initialising bitmap for MemDC */
     if (hBM != NULL)
@@ -150,8 +157,14 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     SetColor(hMemDC, 255, 255, 255);
     Rectangle(hMemDC, 0, 0, W, H);
 
+    /* Update Timer */
+    TimerResponse();
+
     /* Drawnig Globe */
     GLB_Draw(hMemDC);
+
+    /* Printing FPS */
+    TextOut(hMemDC, 0, 0, FPSString, sprintf(FPSString, "FPS: %i", (INT)FPS));
 
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
@@ -172,6 +185,9 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
       break;
     case VK_ESCAPE:
       PostMessage(hWnd, WM_DESTROY, wParam, lParam);
+      break;
+    case ' ':
+      IsPause = !IsPause;
       break;
     }
     break;

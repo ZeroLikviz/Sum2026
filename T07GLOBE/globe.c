@@ -3,12 +3,12 @@
  * DATE: 06.06.2026
  * PURPOSE: Trying 3D.
  */
-#include <time.h>
 #include <math.h>
 #include "globe.h"
 #include "mth.h"
-#define GLB_GRID_H 60
-#define GLB_GRID_W 60
+#include "timer.h"
+#define GLB_GRID_H 30
+#define GLB_GRID_W 30
 #define WRAP_H(X) ((X) % GLB_GRID_H)
 #define WRAP_W(X) ((X) % GLB_GRID_W)
 INT GLB_Ws;
@@ -17,7 +17,6 @@ INT GLB_Wp;
 INT GLB_Hp;
 DOUBLE GLB_ProjSize = 1;
 DOUBLE GLB_ProjDist = 1;
-DOUBLE Timer = 0;
 
 static VEC3 GLB_Globe[GLB_GRID_H][GLB_GRID_W];
 static VEC3 GLB_Normals[GLB_GRID_H][GLB_GRID_W];
@@ -32,21 +31,31 @@ DOUBLE Pow( DOUBLE X, DOUBLE Y )
   return pow(X, Y);
 }
 
+DOUBLE Clamp( DOUBLE X, DOUBLE Min, DOUBLE Max )
+{
+  if (X < Min)
+    return Min;
+  if (X > Max)
+    return Max;
+  return X;
+}
+
 /* Fills GLB_Globe with sphere points */
 VOID GLB_Init( DOUBLE R )
 {
   INT i, j;
   DOUBLE Phi, Theta;
-  static DOUBLE a = 0.3, b = 0.3;
-  a += 0.050 * sin(Timer * 5);
-  b += 0.050 * sin(Timer * 5);
+  static DOUBLE coeff = 0.35;
+  
+  coeff += 0.090 * sin(Time * 5);
+  coeff = Clamp(coeff, 0.3, 1.4);
 
   for (i = 0, Theta = 0; i < GLB_GRID_H; i++, Theta += PI / (GLB_GRID_H - 1))
     for (j = 0, Phi = 0; j < GLB_GRID_W; j++, Phi += DPI / (GLB_GRID_W - 2))
     {
-      GLB_Globe[i][j].X = R * Pow(sin(Theta), a) * Pow(sin(Phi), b);
+      GLB_Globe[i][j].X = R * Pow(sin(Theta), coeff) * Pow(sin(Phi), sin(coeff));
       GLB_Globe[i][j].Y = R * cos(Theta);
-      GLB_Globe[i][j].Z = R * Pow(sin(Theta), b) * Pow(cos(Phi), a);
+      GLB_Globe[i][j].Z = R * Pow(sin(Theta), coeff) * Pow(cos(Phi), cos(coeff));
     }
   
   for (i = 0; i < GLB_GRID_H; i++)
@@ -92,15 +101,14 @@ VOID GLB_Resize( INT W, INT H )
 
 VOID CalcMatrixes( VOID )
 {
-  MATR RX = MatrRotateX(270 * sin(Timer) + 90);
-  MATR RY = MatrRotateY(90 * sin(4 * Timer));
-  MATR RZ = MatrRotateZ(180 * cos(Timer));
+  MATR RX = MatrRotateX(270 * sin(Time) + 90);
+  MATR RY = MatrRotateY(90 * sin(4 * Time));
+  MATR RZ = MatrRotateZ(180 * cos(Time));
   MATR R = MatrMulMatr(MatrMulMatr(RY, RX), RZ);
-  MATR T = MatrTranslate(VecSet3(0, 0, -3));
 
-  PointMatrix = MatrMulMatr(R, T);
-  VecMatrix = MatrTranspone(MatrInverse(R));
-  Timer = (DOUBLE)clock() / CLOCKS_PER_SEC;
+  PointMatrix = MatrMulMatr(MatrMulMatr(R, MatrView(VecSet3(0, 0, -4 + 3 * sin(GlobalTime)), VecSet3(0, 0, 0), VecSet3(0, 1, 0))), 
+    MatrFrustum(-GLB_Ws / 2, GLB_Ws / 2, -GLB_Hs / 2, GLB_Hs / 2, GLB_ProjDist, 10));
+  VecMatrix = MatrTranspose(MatrInverse(R));
 }
 
 VEC3 Apply( VEC3 P )
@@ -120,14 +128,16 @@ VOID GLB_Draw( HDC hDC )
   static POINT Face[4];
   INT i, j;
 
-  GLB_Init(0.8);
+  //if (!IsPause)
+  //  GLB_Init(0.5);
+  
   CalcMatrixes();
   for (i = 0; i < GLB_GRID_H; i++)
     for (j = 0; j < GLB_GRID_W; j++)
     {
       VEC3 Vertex = Apply(GLB_Globe[i][j]);
-      Projections[i][j].x =  (INT)(Vertex.X * GLB_Wp * GLB_ProjDist / Vertex.Z) + GLB_Ws / 2;
-      Projections[i][j].y = -(INT)(Vertex.Y * GLB_Hp * GLB_ProjDist / Vertex.Z) + GLB_Hs / 2;
+      Projections[i][j].x = (INT)Vertex.X;
+      Projections[i][j].y = (INT)Vertex.Y;
     }
 
   SelectObject(hDC, GetStockObject(DC_BRUSH));
@@ -136,19 +146,21 @@ VOID GLB_Draw( HDC hDC )
     for (j = 0; j < GLB_GRID_W - 1; j++)
     {
       INT r = 255;
-      INT g = 255;
-      INT b = 255;
+      INT g = 0;
+      INT b = 0;
       DBL Factor = VecDot3(ApplyNormal(GLB_Normals[i][j]), VecSet3(0, 0, -1));
-      if (Factor > -0.28)
+      if (Factor < 0.28)
         continue;
+      /*
       Factor = pow(fabs(Factor), 20);
       Factor = pow(Factor, 0.3);
       if (Factor > 0.3 && Factor < 0.5)
         Factor = 1 - Factor;
       else if (Factor < 0.3)
         Factor = pow(Factor, Factor);
-        
-      SetDCPenColor(hDC, RGB(r * Factor, g * Factor, b * Factor));
+      */
+
+      SetDCPenColor(hDC, RGB(255 - r * Factor, 255 - g * Factor, 255 - b * Factor));
       SetDCBrushColor(hDC, RGB(r * Factor, g * Factor, b * Factor));
       Face[0] = Projections[i][j];
       Face[1] = Projections[i][j + 1];

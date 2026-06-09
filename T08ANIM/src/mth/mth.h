@@ -1,7 +1,7 @@
 /* FILE NAME: mth.h
  * PROGRAMMER: TM5
- * DATE: 08.06.2026
- * PURPOSE: Implementing matrix math.
+ * DATE: 09.06.2026
+ * PURPOSE: Implement matrix math.
  */
 #ifndef __mth_h_
 #define __mth_h_
@@ -63,7 +63,6 @@ MATR MatrTranslate( VEC3 Vec );
 MATR MatrSetTranslate( MATR Matrix, VEC3 Vec );
 MATR MatrTranspose( MATR Matrix );
 MATR MatrView( VEC3 Loc, VEC3 At, VEC3 Up1 );
-MATR MatrOrtho( DBL Left, DBL Right, DBL Top, DBL Bottom, DBL Near, DBL Far );
 MATR MatrFrustum( DBL Left, DBL Right, DBL Top, DBL Bottom, DBL Near, DBL Far );
 
 VOID PrintMatrix( HDC hDC, MATR Matrix );
