@@ -123,7 +123,7 @@ DBL MatrDeterm( MATR Matrix )
      Matrix.Values[0][2] * MatrDeterm3x3(Matrix.Values[1][0], Matrix.Values[1][1], Matrix.Values[1][3],
                                Matrix.Values[2][0], Matrix.Values[2][1], Matrix.Values[2][3],
                                Matrix.Values[3][0], Matrix.Values[3][1], Matrix.Values[3][3]) +
-    -Matrix.Values[0][2] * MatrDeterm3x3(Matrix.Values[1][0], Matrix.Values[1][1], Matrix.Values[1][2],
+    -Matrix.Values[0][3] * MatrDeterm3x3(Matrix.Values[1][0], Matrix.Values[1][1], Matrix.Values[1][2],
                                Matrix.Values[2][0], Matrix.Values[2][1], Matrix.Values[2][2],
                                Matrix.Values[3][0], Matrix.Values[3][1], Matrix.Values[3][2]);
 }
@@ -221,8 +221,8 @@ VEC3 VecRotateVec3( VEC3 Axis, VEC3 Vec, DBL Degrees )
   DBL Sin = sin(D2R(Degrees));
   DBL Cos = cos(D2R(Degrees));
   MATR Matrix = MatrIdentity();
-  Axis.Z *= -1;
-  Axis = VecMulNum3(Axis, VecLen3(Axis));
+  
+  Axis = VecNormalize3(Axis, VecLen3(Axis));
 
   Matrix.Values[0][0] = Cos + Axis.X * Axis.X * (1 - Cos);
   Matrix.Values[0][1] = Axis.Y * Axis.X * (1 - Cos) + Axis.Z * Sin;
