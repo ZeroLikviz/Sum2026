@@ -6,9 +6,16 @@
 #ifndef __mth_h_
 #define __mth_h_
 #include <windows.h>
-#ifndef PI
+
 #define PI 3.141592653589793238462643
-#endif
+#define DPI (2 * PI)
+#define D2R(X) ((X) / 180.0 * PI)
+#define R2D(X) ((X) / PI * 180.0)
+
+#define MatrMulMatr3(M1, M2, M3) (MatrMulMatr(M1, MatrMulMatr(M2, M3)))
+#define MatrMulMatr4(M1, M2, M3, M4) (MatrMulMatr(M1, MatrMulMatr3(M2, M3, M4)))
+#define MatrMulMatr5(M1, M2, M3, M4, M5) (MatrMulMatr(M1, MatrMulMatr4(M2, M3, M4, M5)))
+#define MatrMulMatr6(M1, M2, M3, M4, M5, M6) (MatrMulMatr(M1, MatrMulMatr5(M2, M3, M4, M5, M6)))
 
 typedef DOUBLE DBL;
 typedef FLOAT FLT;
@@ -64,6 +71,8 @@ MATR MatrSetTranslate( MATR Matrix, VEC3 Vec );
 MATR MatrTranspose( MATR Matrix );
 MATR MatrView( VEC3 Loc, VEC3 At, VEC3 Up1 );
 MATR MatrFrustum( DBL Left, DBL Right, DBL Top, DBL Bottom, DBL Near, DBL Far );
+MATR MatrScale1( DBL X );
+MATR MatrScale3( VEC3 Vec );
 
 VOID PrintMatrix( HDC hDC, MATR Matrix );
 VOID PrintVec3( HDC hDC, VEC3 Vec );

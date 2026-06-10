@@ -9,9 +9,6 @@
 #include <math.h>
 #include "mth.h"
 
-#define D2R(X) ((X) * (PI / 180.0))
-#define R2D(X) ((X) * (180.0 / PI))
-
 VEC3 VecSet3( DBL X, DBL Y, DBL Z )
 {
   VEC3 NewVec = {X, Y, Z};
@@ -222,7 +219,7 @@ VEC3 VecRotateVec3( VEC3 Axis, VEC3 Vec, DBL Degrees )
   DBL Cos = cos(D2R(Degrees));
   MATR Matrix = MatrIdentity();
   
-  Axis = VecNormalize3(Axis, VecLen3(Axis));
+  Axis = VecNormalize3(Axis);
 
   Matrix.Values[0][0] = Cos + Axis.X * Axis.X * (1 - Cos);
   Matrix.Values[0][1] = Axis.Y * Axis.X * (1 - Cos) + Axis.Z * Sin;
@@ -242,36 +239,45 @@ VEC3 VecRotateVec3( VEC3 Axis, VEC3 Vec, DBL Degrees )
 MATR MatrRotateX( DBL Degrees )
 {
   MATR NewMatrix = MatrIdentity();
-  
+  DBL Cos, Sin;
+
   Degrees = D2R(Degrees);
-  NewMatrix.Values[1][1] =  cos(Degrees);
-  NewMatrix.Values[1][2] =  sin(Degrees);
-  NewMatrix.Values[2][1] = -sin(Degrees);
-  NewMatrix.Values[2][2] =  cos(Degrees);
+  Cos = cos(Degrees);
+  Sin = sin(Degrees);
+  NewMatrix.Values[1][1] =  Cos;
+  NewMatrix.Values[1][2] =  Sin;
+  NewMatrix.Values[2][1] = -Sin;
+  NewMatrix.Values[2][2] =  Cos;
   return NewMatrix;
 }
 
 MATR MatrRotateY( DBL Degrees )
 {
   MATR NewMatrix = MatrIdentity();
-  
+  DBL Cos, Sin;
+
   Degrees = D2R(Degrees);
-  NewMatrix.Values[0][0] =  cos(Degrees);
-  NewMatrix.Values[0][2] =  -sin(Degrees);
-  NewMatrix.Values[2][0] =  sin(Degrees);
-  NewMatrix.Values[2][2] =  cos(Degrees);
+  Cos = cos(Degrees);
+  Sin = sin(Degrees);
+  NewMatrix.Values[0][0] =  Cos;
+  NewMatrix.Values[0][2] = -Sin;
+  NewMatrix.Values[2][0] =  Sin;
+  NewMatrix.Values[2][2] =  Cos;
   return NewMatrix;
 }
 
 MATR MatrRotateZ( DBL Degrees )
 {
   MATR NewMatrix = MatrIdentity();
-  
+  DBL Cos, Sin;
+
   Degrees = D2R(Degrees);
-  NewMatrix.Values[0][0] =  cos(Degrees);
-  NewMatrix.Values[0][1] =  sin(Degrees);
-  NewMatrix.Values[1][0] = -sin(Degrees);
-  NewMatrix.Values[1][1] =  cos(Degrees);
+  Cos = cos(Degrees);
+  Sin = sin(Degrees);
+  NewMatrix.Values[0][0] =  Cos;
+  NewMatrix.Values[0][1] =  Sin;
+  NewMatrix.Values[1][0] = -Sin;
+  NewMatrix.Values[1][1] =  Cos;
   return NewMatrix;
 }
 
@@ -338,6 +344,36 @@ MATR MatrFrustum( DBL Left, DBL Right, DBL Bottom, DBL Top, DBL Near, DBL Far )
       {0, 2 * Near / (Top - Bottom), 0, 0},
       {(Right + Left) / (Right - Left), (Top + Bottom) / (Top - Bottom), -(Far + Near) / (Far - Near), -1},
       { 0, 0, -2 * Near * Far / (Far - Near), 0}
+    }
+  };
+
+  return NewMatrix;
+}
+
+MATR MatrScale1( DBL X )
+{
+  MATR NewMatrix =
+  {
+    {
+      {X, 0, 0, 0},
+      {0, X, 0, 0},
+      {0, 0, X, 0},
+      {0, 0, 0, 1}
+    }
+  };
+
+  return NewMatrix;
+}
+
+MATR MatrScale3( VEC3 Vec )
+{
+  MATR NewMatrix =
+  {
+    {
+      {Vec.X, 0, 0, 0},
+      {0, Vec.Y, 0, 0},
+      {0, 0, Vec.Z, 0},
+      {0, 0, 0,     1}
     }
   };
 

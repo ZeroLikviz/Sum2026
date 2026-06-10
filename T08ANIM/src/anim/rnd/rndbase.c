@@ -6,7 +6,7 @@
 #include "anim/rnd/rnd.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdio.h>
 /***  ////////
  ***  Renderer
  ***/ ////////
@@ -20,7 +20,7 @@ VOID TM5_RndInit( HWND hWnd )
   TM5_RndFrameH = 0;
   TM5_hRndBmFrame = NULL;
   TM5_hRndDCFrame = CreateCompatibleDC(hDC);
-  TM5_RndCamSet(VecSet3(0, 0, 4), VecSet3(0, 0, 0), VecSet3(0, 1, 0));
+  TM5_RndCamSet(VecSet3(0, 0, 0.001), VecSet3(0, 0, 0), VecSet3(0, 1, 0));
 
   ReleaseDC(hWnd, hDC);
 }
@@ -62,11 +62,6 @@ VOID TM5_RndStart( VOID )
   SetDCPenColor(TM5_hRndDCFrame, RGB(128, 128, 128));
 
   Rectangle(TM5_hRndDCFrame, 0, 0, TM5_RndFrameW, TM5_RndFrameH);
-  
-  SetDCBrushColor(TM5_hRndDCFrame, RGB(255, 0, 0));
-  SetDCPenColor(TM5_hRndDCFrame, RGB(0, 255, 0));
-  Ellipse(TM5_hRndDCFrame, TM5_RndFrameW / 2 - 15, TM5_RndFrameH / 2 - 15,
-          TM5_RndFrameW / 2 + 15, TM5_RndFrameH / 2 + 15);
 }
 
 VOID TM5_RndEnd( VOID )
@@ -104,34 +99,30 @@ VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
 {
   INT i;
   MATR wvp = MatrMulMatr(MatrMulMatr(Primitive->Transform, World), TM5_RndMatrVP);
-  POINT *pnts;
 
-  if ((pnts = malloc(sizeof(POINT) * Primitive->NumOfV)) == NULL)
-    return;
-
-  /* Build vertex projects */
   for (i = 0; i < Primitive->NumOfV; i++)
   {
-    VEC3 P = VecMulMatr(Primitive->Vertices[i].Vec, wvp);
+    VEC3 Vec = VecMulMatr(Primitive->Vertices[i].Vec, wvp);
 
-    pnts[i].x = (INT)((P.X + 1) * TM5_RndFrameW / 2);
-    pnts[i].y = (INT)((-P.Y + 1) * TM5_RndFrameH / 2);
+    Primitive->Projections[i].x = (INT)((Vec.X + 1) * TM5_RndFrameW / 2);
+    Primitive->Projections[i].y = (INT)((-Vec.Y + 1) * TM5_RndFrameH / 2);
   }
 
   for (i = 0; i < Primitive->NumOfI; i += 3)
   {
-    MoveToEx(TM5_hRndDCFrame, pnts[Primitive->Indexes[i]].x, pnts[Primitive->Indexes[i]].y, NULL); 
-    LineTo(TM5_hRndDCFrame, pnts[Primitive->Indexes[i + 1]].x, pnts[Primitive->Indexes[i + 1]].y);
-    LineTo(TM5_hRndDCFrame, pnts[Primitive->Indexes[i + 2]].x, pnts[Primitive->Indexes[i + 2]].y);
-    LineTo(TM5_hRndDCFrame, pnts[Primitive->Indexes[i]].x, pnts[Primitive->Indexes[i]].y);
+    if ((i / 3) % 4 != 0)
+      continue;
+    MoveToEx(TM5_hRndDCFrame, Primitive->Projections[Primitive->Indexes[i]].x, Primitive->Projections[Primitive->Indexes[i]].y, NULL); 
+    LineTo(TM5_hRndDCFrame, Primitive->Projections[Primitive->Indexes[i + 1]].x, Primitive->Projections[Primitive->Indexes[i + 1]].y);
+    LineTo(TM5_hRndDCFrame, Primitive->Projections[Primitive->Indexes[i + 2]].x, Primitive->Projections[Primitive->Indexes[i + 2]].y);
+    LineTo(TM5_hRndDCFrame, Primitive->Projections[Primitive->Indexes[i]].x, Primitive->Projections[Primitive->Indexes[i]].y);
   }
-  free(pnts);
 }
 
 VOID TM5_RndPrimFree( tm5PRIM *Primitive )
 {
   free(Primitive->Vertices);
-  memset(Primitive, 0, sizeof(tm5VERTEX));
+  memset(Primitive, 0, sizeof(tm5PRIM));
 }
 
 BOOL TM5_RndPrimCreate( tm5PRIM *Primitive, INT NofV, INT NofI )
@@ -139,15 +130,128 @@ BOOL TM5_RndPrimCreate( tm5PRIM *Primitive, INT NofV, INT NofI )
   INT size;
 
   memset(Primitive, 0, sizeof(tm5PRIM));
-  size = sizeof(tm5VERTEX) * NofV + sizeof(INT) * NofI;
+  size = sizeof(tm5VERTEX) * NofV + sizeof(INT) * NofI + sizeof(POINT) * NofV;
 
   if ((Primitive->Vertices = malloc(size)) == NULL)
     return FALSE;
   Primitive->Indexes = (INT *)(Primitive->Vertices + NofV);
+  Primitive->Projections = (POINT *)(Primitive->Indexes + NofI);
   Primitive->NumOfV = NofV;
   Primitive->NumOfI = NofI;
   Primitive->Transform = MatrIdentity();
   memset(Primitive->Vertices, 0, size);
+  return TRUE;
+}
+
+INT CountVertexIndexes( CHAR *String )
+{
+  INT Count = -1;
+  INT i = 0;
+
+  while (String[i] && i < 1024)
+  {
+    while (String[i] && String[i] == ' ' && i < 1024)
+      i++;
+
+    if (String[i] != ' ' && String[i])
+      Count++;
+
+    while (String[i] && String[i] != ' ' && i < 1024)
+      i++;
+  }
+
+  return Count;
+}
+
+BOOL TM5_RndPrimLoad( tm5PRIM *Primitive, CHAR *FileName )
+{
+  FILE *F;
+  INT nv = 0, nf = 0;
+  static CHAR Buffer[3000];
+
+  memset(Primitive, 0, sizeof(tm5PRIM));
+
+  if ((F = fopen(FileName, "r")) == NULL)
+    return FALSE;
+
+  /* Count vertices and indices */
+  while (fgets(Buffer, sizeof(Buffer) - 1, F) != NULL)
+  {
+    if (Buffer[0] == 'v' && Buffer[1] == ' ')
+      nv++;
+    else if (Buffer[0] == 'f' && Buffer[1] == ' ')
+    {
+      INT n = 0;
+      CHAR *ptr = Buffer + 2, oldc = ' ';
+
+      while (*ptr != 0)
+      {
+        if (*ptr != ' ' && oldc == ' ')
+          n++;
+        oldc = *ptr++;
+      }
+
+      nf += n - 2;
+    }
+  }
+
+  if (!TM5_RndPrimCreate(Primitive, nv, nf * 3))
+  {
+    fclose(F);
+    return FALSE;
+  }
+
+  /* Load model */
+  rewind(F);
+  nv = 0;
+  nf = 0;
+  while (fgets(Buffer, sizeof(Buffer) - 1, F) != NULL)
+  {
+    if (Buffer[0] == 'v' && Buffer[1] == ' ')
+    {
+      DBL x, y, z;
+
+      sscanf(Buffer + 2, "%lf%lf%lf", &x, &y, &z);
+      Primitive->Vertices[nv++].Vec = VecSet3(x, y, z);
+    }
+    else if (Buffer[0] == 'f' && Buffer[1] == ' ')
+    {
+      INT n, n1, n2, n3;
+      INT fvn = 0;
+      CHAR *ptr = Buffer + 2, oldc = ' ';
+
+      while (*ptr != 0)
+      {
+        if (*ptr != ' ' && oldc == ' ')
+        {
+          sscanf(ptr, "%d", &n);
+          if (n > 0)
+            n--;
+          else
+            if (n < 0)
+              n += nv;
+
+          if (fvn == 0)
+            n1 = n;
+          else if (fvn == 1)
+            n2 = n;
+          else
+          {
+            n3 = n;
+
+            Primitive->Indexes[nf++] = n1;
+            Primitive->Indexes[nf++] = n2;
+            Primitive->Indexes[nf++] = n3;
+
+            n2 = n3;
+          }
+          fvn++;
+        }
+        oldc = *ptr++;
+      }
+    }
+  }
+  fclose(F);
   return TRUE;
 }
 

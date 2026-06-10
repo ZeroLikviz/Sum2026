@@ -198,21 +198,61 @@
 				Name="Animation System"
 				>
 				<File
-					RelativePath=".\src\anim\rnd\rnd.h"
+					RelativePath=".\src\anim\anim.c"
 					>
 				</File>
 				<File
-					RelativePath=".\src\anim\rnd\rndbase.c"
+					RelativePath=".\src\anim\anim.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\anim\rnd\rnddata.c"
+					RelativePath=".\src\anim\unit.c"
 					>
 				</File>
-				<File
-					RelativePath=".\src\anim\rnd\rndprim.c"
+				<Filter
+					Name="Renderer"
 					>
-				</File>
+					<File
+						RelativePath=".\src\anim\rnd\rnd.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndbase.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rnddata.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndprim.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Timer"
+					>
+					<File
+						RelativePath=".\src\anim\timer.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\timer.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Units"
+					>
+					<File
+						RelativePath=".\src\anim\units\furry_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\units.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Windows Depended"
