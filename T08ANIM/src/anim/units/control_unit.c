@@ -133,6 +133,18 @@ static VOID ProcessMouse( tm5ANIM *Anim )
     SetCursorPos(MousePos.x, MousePos.y);
 }
 
+static VOID ProcessJoystick( tm5ANIM *Anim )
+{
+  VEC3 Right = VecCross3(CamDir, VecUp);
+
+  CamPos = VecAddVec3(CamPos, VecMulNum3(CamDir,  -CamSpeed * Anim->JY));
+  CamPos = VecAddVec3(CamPos, VecMulNum3(VecCross3(CamDir, VecUp), CamSpeed * Anim->JX));
+  
+  CamDir = VecMulMatr(CamDir, MatrRotateY(-Anim->JR * 40 * Sensitivity));
+  CamDir = VecRotateVec3(Right, CamDir, -Anim->JZ * 40 * Sensitivity);
+  TM5_RndCamSet(CamPos, VecAddVec3(CamPos, CamDir), VecUp);
+}
+
 static VOID Response( tm5UNIT *Unit, tm5ANIM *Anim )
 {
   if (!Anim->IsActive)
@@ -145,6 +157,7 @@ static VOID Response( tm5UNIT *Unit, tm5ANIM *Anim )
   {
     ProcessKeyboard(Anim);
     ProcessMouse(Anim);
+    ProcessJoystick(Anim);
   }
 }
 
