@@ -142,7 +142,7 @@ VOID TM5_RndPrimRelocate( tm5PRIM *Primitive )
     Max.Z = max(Primitive->Vertices[i].Vec.Z, Max.Z);
   }
 
-  Relocation = VecMulNum3(VecSubVec3(Min, Max), 0.5);
+  Relocation = VecMulNum3(VecAddVec3(Min, Max), -0.5);
   TM5_RndPrimPermanentApply(Primitive, MatrTranslate(Relocation));
 }
 
@@ -182,7 +182,7 @@ VOID TM5_RndPrimResizeTo1( tm5PRIM *Primitive )
 
 VOID TM5_RndPrimStandartize( tm5PRIM *Primitive )
 {
-  TM5_RndPrimRelocateMass(Primitive);
+  TM5_RndPrimRelocate(Primitive);
   TM5_RndPrimResizeTo1(Primitive);
 }
 

@@ -110,7 +110,7 @@ VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
 
   for (i = 0; i < Primitive->NumOfI; i += 3)
   {
-    if ((i / 3) % 4 != 0)
+    if ((i / 3) % 1 != 0)
       continue;
     MoveToEx(TM5_hRndDCFrame, Primitive->Projections[Primitive->Indexes[i]].x, Primitive->Projections[Primitive->Indexes[i]].y, NULL); 
     LineTo(TM5_hRndDCFrame, Primitive->Projections[Primitive->Indexes[i + 1]].x, Primitive->Projections[Primitive->Indexes[i + 1]].y);

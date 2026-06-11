@@ -1,14 +1,16 @@
-/* FILE NAME: furry_unit.c
+/* FILE NAME: sphere_unit.c
  * PROGRAMMER: TM5
  * DATE: 10.06.2026
  * PURPOSE: Implement animation system.
  */
 
+#include <math.h>
+
 #include "anim/units/units.h"
 
 /* Furry Unit */
-typedef struct tagtm5UNIT_FURRY tm5UNIT_FURRY;
-struct tagtm5UNIT_FURRY
+typedef struct tagtm5UNIT_SPHERE tm5UNIT_SPHERE;
+struct tagtm5UNIT_SPHERE
 {
   VOID (*Init)( tm5UNIT *Unit, tm5ANIM *Anim );
   VOID (*Close)( tm5UNIT *Unit, tm5ANIM *Anim );
@@ -21,33 +23,32 @@ struct tagtm5UNIT_FURRY
 
 static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
 {
-  tm5UNIT_FURRY *rUnit = (tm5UNIT_FURRY*)(Unit);
+  tm5UNIT_SPHERE *rUnit = (tm5UNIT_SPHERE*)(Unit);
   
-  TM5_RndPrimLoad(&(rUnit->Model), "bin/models/real_furry.obj");
-  
-  TM5_RndPrimPermanentApply(&(rUnit->Model), MatrRotateX(-90));
-  TM5_RndPrimStandartize(&(rUnit->Model));
+  TM5_RndPrimCreateSphere(&(rUnit->Model), 1, 20, 20);
   rUnit->Pos = VecSet3(0, 0, 0);
 }
 
 static VOID Close( tm5UNIT *Unit, tm5ANIM *Anim )
 {
-  tm5UNIT_FURRY *rUnit = (tm5UNIT_FURRY*)(Unit);
+  tm5UNIT_SPHERE *rUnit = (tm5UNIT_SPHERE*)(Unit);
   
   TM5_RndPrimFree(&(rUnit->Model));
-  memset(rUnit, 0, sizeof(tm5UNIT_FURRY));
+  memset(rUnit, 0, sizeof(tm5UNIT_SPHERE));
 }
 
 static VOID Response( tm5UNIT *Unit, tm5ANIM *Anim )
 {
-  tm5UNIT_FURRY *rUnit = (tm5UNIT_FURRY*)(Unit);
+  static DBL Ticks = 0;
+  tm5UNIT_SPHERE *rUnit = (tm5UNIT_SPHERE*)(Unit);
   
-  //rUnit->Model.Transform = MatrMulMatr(rUnit->Model.Transform, MatrRotateY(-Anim->DeltaTime * 25));
+  rUnit->Pos.Y = sin(Ticks);
+  Ticks += 0.004;
 }
 
 static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 {
-  tm5UNIT_FURRY *rUnit = (tm5UNIT_FURRY*)(Unit);
+  tm5UNIT_SPHERE *rUnit = (tm5UNIT_SPHERE*)(Unit);
   
   SelectObject(Anim->hDC, GetStockObject(DC_BRUSH));
   SelectObject(Anim->hDC, GetStockObject(DC_PEN));
@@ -57,9 +58,9 @@ static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
   TM5_RndPrimDraw(&(rUnit->Model), MatrTranslate(rUnit->Pos));
 }
 
-tm5UNIT* TM5_UnitCreateFurry( VOID )
+tm5UNIT* TM5_UnitCreateSphere( VOID )
 {
-  tm5UNIT_FURRY *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_FURRY));
+  tm5UNIT_SPHERE *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_SPHERE));
 
   NewUnit->Init = Init;
   NewUnit->Close = Close;
@@ -69,4 +70,4 @@ tm5UNIT* TM5_UnitCreateFurry( VOID )
   return (VOID *)NewUnit;
 }
 
-/* End of 'furry_unit.c' file */
+/* End of 'sphere_unit.c' file */

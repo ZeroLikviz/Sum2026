@@ -380,6 +380,11 @@ MATR MatrScale3( VEC3 Vec )
   return NewMatrix;
 }
 
+DBL Sign( DBL X )
+{
+  return (X > 0) - (X < 0);
+}
+
 VOID PrintMatrix( HDC hDC, MATR Matrix )
 {
   static CHAR Text[4096] = "";

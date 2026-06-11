@@ -5,6 +5,8 @@
  */
 #include <windows.h>
 #include <math.h>
+
+#include "anim/anim.h"
 #include "anim/units/units.h"
 #include "anim/rnd/rnd.h"
 #include "anim/anim.h"
@@ -26,7 +28,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
   wc.cbClsExtra = 0;
   wc.cbWndExtra = 0;
   wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-  wc.hCursor = LoadCursor(NULL, IDC_APPSTARTING);
+  wc.hCursor = LoadCursor(NULL, IDC_NO);
   wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
   wc.hInstance = hInstance;
   wc.lpszMenuName = NULL;
@@ -66,19 +68,28 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   switch (Msg)
   {
   case WM_CREATE:
-    TM5_RndInit(hWnd);
     SetTimer(hWnd, 7969, 16, NULL);
     TM5_AnimInit(hWnd);
+    
+    TM5_AnimUnitAdd(TM5_UnitCreateTorus());
+    //TM5_AnimUnitAdd(TM5_UnitCreateSphere());
+    //TM5_AnimUnitAdd(TM5_UnitCreateCylinder());
     TM5_AnimUnitAdd(TM5_UnitCreateFurry());
-    TM5_RndCamSet(VecSet3(0, 0, 1), VecSet3(0, 0, 0), VecSet3(0, 1, 0));
+    TM5_AnimUnitAdd(TM5_UnitCreateFPS());
+    //TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/spider.obj"));
     return 0;
   case WM_SIZE:
     TM5_AnimResize(LOWORD(lParam), HIWORD(lParam));
-    return 0;  
+    return 0;
   case WM_DESTROY:
     TM5_AnimClose();
     PostMessage(NULL, WM_QUIT, 0, 0);
     return 0;
+  case WM_GETMINMAXINFO:
+    minmax = (MINMAXINFO *)lParam;
+    minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYBORDER) * 2;
+    return 0;
+
   case WM_ERASEBKGND:
     return 1;
   case WM_TIMER:
@@ -92,18 +103,23 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     hDC = BeginPaint(hWnd, &ps);
     EndPaint(hWnd, &ps);
     return 0;
-  case WM_GETMINMAXINFO:
-    minmax = (MINMAXINFO *)lParam;
-    minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYBORDER) * 2;
+  
+  case WM_LBUTTONDOWN:
+    SetCapture(hWnd);
     return 0;
-  case WM_KEYDOWN:
-    switch (wParam)
-    {
-    case VK_ESCAPE:
-      PostMessage(hWnd, WM_DESTROY, wParam, lParam);
-      break;
-    }
-    break;
+  case WM_LBUTTONUP:
+    ReleaseCapture();
+    return 0;
+
+  case WM_ACTIVATE:
+    TM5_Animation.IsActive = LOWORD(wParam) != WA_INACTIVE;
+    return 0;
+  case WM_ENTERSIZEMOVE:
+    TM5_Animation.IsActive = FALSE;
+    return 0;
+  case WM_EXITSIZEMOVE:
+    TM5_Animation.IsActive = TRUE;
+    return 0;
   }
 
   return DefWindowProc(hWnd, Msg, wParam, lParam);

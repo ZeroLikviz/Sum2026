@@ -74,6 +74,8 @@ MATR MatrFrustum( DBL Left, DBL Right, DBL Top, DBL Bottom, DBL Near, DBL Far );
 MATR MatrScale1( DBL X );
 MATR MatrScale3( VEC3 Vec );
 
+DBL Sign( DBL X );
+
 VOID PrintMatrix( HDC hDC, MATR Matrix );
 VOID PrintVec3( HDC hDC, VEC3 Vec );
 #endif

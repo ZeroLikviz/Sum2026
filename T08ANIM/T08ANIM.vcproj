@@ -245,7 +245,31 @@
 					Name="Units"
 					>
 					<File
+						RelativePath=".\src\anim\units\control_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\cylinder_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\fps_unit.c"
+						>
+					</File>
+					<File
 						RelativePath=".\src\anim\units\furry_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\obj_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\sphere_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\torus_unit.c"
 						>
 					</File>
 					<File
