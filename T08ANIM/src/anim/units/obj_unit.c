@@ -19,7 +19,7 @@ struct tagtm5UNIT_OBJ
   
   CHAR ModelPath[MaxPathLen];
   tm5PRIM Model;
-  VEC3 Pos;
+  VEC Pos;
 };
 
 static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )

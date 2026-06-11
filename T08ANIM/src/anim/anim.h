@@ -16,28 +16,28 @@
 typedef struct tagtm5ANIM tm5ANIM;
 typedef struct tagtm5UNIT tm5UNIT;
 
-/* Anim Structure */
+/* Animation Structure */
 struct tagtm5ANIM
 {
-  INT NumOfU;
-  tm5UNIT *Units[MAX_UNITS];
-  HWND hWnd;
-  HDC hDC;
-  INT W, H;
-  BOOL IsActive;
+  HWND hWnd;                 /* Main window handler */
+  HDC hDC;                   /* DC handler to draw to */
+  INT W, H;                  /* Width and heigth parameters of window */
+  BOOL IsActive;             /* Bool whether to do anything */
 
-  DOUBLE
-    GlobalTime,
-    GlobalDeltaTime,
-    Time,
-    DeltaTime,
-    FPS;
-  BOOL IsPause;
+  INT NumOfU;                /* Number of units */
+  tm5UNIT *Units[MAX_UNITS]; /* Pointers to units */
 
-  BYTE Keys[256];
-  BYTE KeysClick[256];
-  BYTE KeysOld[256];
-  BOOL ProcessKeyboard;
+  DOUBLE GlobalTime;         /* Time from the start of the program */
+  DOUBLE GlobalDeltaTime;    /* Interframe time */
+  DOUBLE Time;               /* Time with pauses */
+  DOUBLE DeltaTime;          /* Interframe time with pauses */
+  DOUBLE FPS;                /* Frames per second */
+  BOOL IsPause;              /* Is timer paused */
+
+  BYTE Keys[256];            /* Keyboard keys */
+  BYTE KeysClick[256];       /* Keyboard just pressed keys */
+  BYTE KeysOld[256];         /* Keyboard pressed keys */
+  BOOL ProcessKeyboard;      /* Bool whether keyboard input should be processed */
 
   INT Mx, My, Mz, Mdx, Mdy, Mdz;
 

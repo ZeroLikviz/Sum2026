@@ -6,11 +6,7 @@
 #include <windows.h>
 #include <math.h>
 
-#include "anim/anim.h"
 #include "anim/units/units.h"
-#include "anim/rnd/rnd.h"
-#include "anim/anim.h"
-#include "def.h"
 
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
 
@@ -71,12 +67,15 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     SetTimer(hWnd, 7969, 16, NULL);
     TM5_AnimInit(hWnd);
     
+    /*
+    TM5_AnimUnitAdd(TM5_UnitCreateSphere());
+    TM5_AnimUnitAdd(TM5_UnitCreateCylinder());
+    TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/spider.obj"));
+    */
     TM5_AnimUnitAdd(TM5_UnitCreateTorus());
-    //TM5_AnimUnitAdd(TM5_UnitCreateSphere());
-    //TM5_AnimUnitAdd(TM5_UnitCreateCylinder());
     TM5_AnimUnitAdd(TM5_UnitCreateFurry());
     TM5_AnimUnitAdd(TM5_UnitCreateFPS());
-    //TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/spider.obj"));
+    
     return 0;
   case WM_SIZE:
     TM5_AnimResize(LOWORD(lParam), HIWORD(lParam));

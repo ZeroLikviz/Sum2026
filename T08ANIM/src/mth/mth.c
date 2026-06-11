@@ -9,50 +9,50 @@
 #include <math.h>
 #include "mth.h"
 
-VEC3 VecSet3( DBL X, DBL Y, DBL Z )
+VEC VecSet3( DBL X, DBL Y, DBL Z )
 {
-  VEC3 NewVec = {X, Y, Z};
+  VEC NewVec = {X, Y, Z};
   return NewVec;
 }
 
-VEC3 VecAddVec3( VEC3 A, VEC3 B )
+VEC VecAddVec( VEC A, VEC B )
 {
   return VecSet3(A.X + B.X, A.Y + B.Y, A.Z + B.Z);
 }
 
-VEC3 VecSubVec3( VEC3 A, VEC3 B )
+VEC VecSubVec( VEC A, VEC B )
 {
   return VecSet3(A.X - B.X, A.Y - B.Y, A.Z - B.Z);
 }
 
-DBL VecLen23( VEC3 Vec )
+DBL VecLen2( VEC Vec )
 {
   return Vec.X * Vec.X + Vec.Y * Vec.Y + Vec.Z * Vec.Z;
 }
 
-DBL VecLen3( VEC3 Vec )
+DBL VecLen( VEC Vec )
 {
   return sqrt(Vec.X * Vec.X + Vec.Y * Vec.Y + Vec.Z * Vec.Z);
 }
 
-VEC3 VecCross3( VEC3 Vec1, VEC3 Vec2 )
+VEC VecCross( VEC Vec1, VEC Vec2 )
 {
   return VecSet3(Vec1.Y * Vec2.Z - Vec1.Z * Vec2.Y, Vec1.Z * Vec2.X - Vec1.X * Vec2.Z, Vec1.X * Vec2.Y - Vec1.Y * Vec2.X);
 }
 
-DOUBLE VecDot3( VEC3 Vec1, VEC3 Vec2 )
+DOUBLE VecDot( VEC Vec1, VEC Vec2 )
 {
   return Vec1.X * Vec2.X + Vec1.Y * Vec2.Y + Vec1.Z * Vec2.Z;
 }
 
-VEC3 VecMulNum3( VEC3 Vec, DOUBLE a )
+VEC VecScale( VEC Vec, DOUBLE a )
 {
   return VecSet3(Vec.X * a, Vec.Y * a, Vec.Z * a);
 }
 
-VEC3 VecNormalize3( VEC3 Vec )
+VEC VecNormalize( VEC Vec )
 {
-  return VecMulNum3(Vec, 1 / VecLen3(Vec));
+  return VecScale(Vec, 1 / VecLen(Vec));
 }
 
 MATR MatrSet( DBL A00, DBL A01, DBL A02, DBL A03,
@@ -204,7 +204,7 @@ MATR MatrInverse( MATR Matrix )
   return NewMatrix;
 }
 
-VEC3 VecMulMatr( VEC3 Vec, MATR Matrix )
+VEC VecMulMatr( VEC Vec, MATR Matrix )
 {
   DBL w = Vec.X * Matrix.Values[0][3] + Vec.Y * Matrix.Values[1][3] + Vec.Z * Matrix.Values[2][3] + Matrix.Values[3][3];
  
@@ -213,13 +213,13 @@ VEC3 VecMulMatr( VEC3 Vec, MATR Matrix )
                 (Vec.X * Matrix.Values[0][2] + Vec.Y * Matrix.Values[1][2] + Vec.Z * Matrix.Values[2][2] + Matrix.Values[3][2]) / w);
 }
 
-VEC3 VecRotateVec3( VEC3 Axis, VEC3 Vec, DBL Degrees )
+VEC VecRotateVec( VEC Axis, VEC Vec, DBL Degrees )
 {
   DBL Sin = sin(D2R(Degrees));
   DBL Cos = cos(D2R(Degrees));
   MATR Matrix = MatrIdentity();
   
-  Axis = VecNormalize3(Axis);
+  Axis = VecNormalize(Axis);
 
   Matrix.Values[0][0] = Cos + Axis.X * Axis.X * (1 - Cos);
   Matrix.Values[0][1] = Axis.Y * Axis.X * (1 - Cos) + Axis.Z * Sin;
@@ -281,7 +281,7 @@ MATR MatrRotateZ( DBL Degrees )
   return NewMatrix;
 }
 
-MATR MatrTranslate( VEC3 Vec )
+MATR MatrTranslate( VEC Vec )
 {
   MATR NewMatrix = MatrIdentity();
 
@@ -289,14 +289,6 @@ MATR MatrTranslate( VEC3 Vec )
   NewMatrix.Values[3][1] = Vec.Y;
   NewMatrix.Values[3][2] = Vec.Z;
   return NewMatrix;
-}
-
-MATR MatrSetTranslate( MATR Matrix, VEC3 Vec )
-{
-  Matrix.Values[3][0] = Vec.X;
-  Matrix.Values[3][1] = Vec.Y;
-  Matrix.Values[3][2] = Vec.Z;
-  return Matrix;
 }
 
 VOID Swap( DBL *A, DBL *B )
@@ -317,18 +309,18 @@ MATR MatrTranspose( MATR Matrix )
   return Matrix;
 }
 
-MATR MatrView( VEC3 Loc, VEC3 At, VEC3 Up1 )
+MATR MatrView( VEC Loc, VEC At, VEC Up1 )
 {
-  VEC3 Dir = VecNormalize3(VecSubVec3(At, Loc));
-  VEC3 Right = VecNormalize3(VecCross3(Dir, Up1));
-  VEC3 Up = VecNormalize3(VecCross3(Right, Dir));
+  VEC Dir = VecNormalize(VecSubVec(At, Loc));
+  VEC Right = VecNormalize(VecCross(Dir, Up1));
+  VEC Up = VecNormalize(VecCross(Right, Dir));
   MATR NewMatrix =
   {
     {
       {Right.X, Up.X, -Dir.X, 0},
       {Right.Y, Up.Y, -Dir.Y, 0},
       {Right.Z, Up.Z, -Dir.Z, 0},
-      {-VecDot3(Loc, Right), -VecDot3(Loc, Up), VecDot3(Loc, Dir), 1}
+      {-VecDot(Loc, Right), -VecDot(Loc, Up), VecDot(Loc, Dir), 1}
     }
   };
 
@@ -365,40 +357,9 @@ MATR MatrScale1( DBL X )
   return NewMatrix;
 }
 
-MATR MatrScale3( VEC3 Vec )
-{
-  MATR NewMatrix =
-  {
-    {
-      {Vec.X, 0, 0, 0},
-      {0, Vec.Y, 0, 0},
-      {0, 0, Vec.Z, 0},
-      {0, 0, 0,     1}
-    }
-  };
-
-  return NewMatrix;
-}
 
 DBL Sign( DBL X )
 {
   return (X > 0) - (X < 0);
 }
-
-VOID PrintMatrix( HDC hDC, MATR Matrix )
-{
-  static CHAR Text[4096] = "";
-  INT i;
-
-  for (i = 0; i < 4; i++)
-    TextOut(hDC, 0, i * 20, Text, sprintf(Text, "[%3.1f][%3.1f][%3.1f][%3.1f]\n",
-      Matrix.Values[i][0], Matrix.Values[i][1], Matrix.Values[i][2], Matrix.Values[i][3]));
-}
-
-VOID PrintVec3( HDC hDC, VEC3 Vec )
-{
-  static CHAR Text[4096] = "";
-  TextOut(hDC, 0, 0, Text, sprintf(Text, "{%3.1f; %3.1f; %3.1f}\n", Vec.X, Vec.Y, Vec.Z));
-}
-
 /* End of 'mth.c' file */

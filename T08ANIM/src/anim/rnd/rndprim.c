@@ -127,7 +127,7 @@ VOID TM5_RndPrimPermanentApply( tm5PRIM *Primitive, MATR Matrix )
 VOID TM5_RndPrimRelocate( tm5PRIM *Primitive )
 {
   INT i;
-  VEC3 Min = Primitive->Vertices[0].Vec,
+  VEC Min = Primitive->Vertices[0].Vec,
        Max = Primitive->Vertices[0].Vec,
        Relocation;
 
@@ -142,26 +142,26 @@ VOID TM5_RndPrimRelocate( tm5PRIM *Primitive )
     Max.Z = max(Primitive->Vertices[i].Vec.Z, Max.Z);
   }
 
-  Relocation = VecMulNum3(VecAddVec3(Min, Max), -0.5);
+  Relocation = VecScale(VecAddVec(Min, Max), -0.5);
   TM5_RndPrimPermanentApply(Primitive, MatrTranslate(Relocation));
 }
 
 VOID TM5_RndPrimRelocateMass( tm5PRIM *Primitive )
 {
   INT i;
-  VEC3 Relocation = VecSet3(0, 0, 0);
+  VEC Relocation = VecSet3(0, 0, 0);
 
   for (i = 0; i < Primitive->NumOfV; i++)
-    Relocation = VecAddVec3(Relocation, Primitive->Vertices[i].Vec);
+    Relocation = VecAddVec(Relocation, Primitive->Vertices[i].Vec);
 
-  Relocation = VecMulNum3(Relocation, -1.0 / Primitive->NumOfV);
+  Relocation = VecScale(Relocation, -1.0 / Primitive->NumOfV);
   TM5_RndPrimPermanentApply(Primitive, MatrTranslate(Relocation));
 }
 
 VOID TM5_RndPrimResizeTo1( tm5PRIM *Primitive )
 {
   INT i;
-  VEC3 Min = Primitive->Vertices[0].Vec,
+  VEC Min = Primitive->Vertices[0].Vec,
        Max = Primitive->Vertices[0].Vec;
   DBL ResizeFactor;
 

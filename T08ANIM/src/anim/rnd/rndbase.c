@@ -89,7 +89,7 @@ VOID TM5_RndProjSet( VOID )
 }
 
 
-VOID TM5_RndCamSet( VEC3 Loc, VEC3 At, VEC3 Up )
+VOID TM5_RndCamSet( VEC Loc, VEC At, VEC Up )
 {
   TM5_RndMatrView = MatrView(Loc, At, Up);
   TM5_RndMatrVP = MatrMulMatr(TM5_RndMatrView, TM5_RndMatrProj);
@@ -102,7 +102,7 @@ VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
 
   for (i = 0; i < Primitive->NumOfV; i++)
   {
-    VEC3 Vec = VecMulMatr(Primitive->Vertices[i].Vec, wvp);
+    VEC Vec = VecMulMatr(Primitive->Vertices[i].Vec, wvp);
 
     Primitive->Projections[i].x = (INT)((Vec.X + 1) * TM5_RndFrameW / 2);
     Primitive->Projections[i].y = (INT)((-Vec.Y + 1) * TM5_RndFrameH / 2);

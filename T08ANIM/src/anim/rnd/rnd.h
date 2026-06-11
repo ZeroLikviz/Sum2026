@@ -11,7 +11,7 @@
 /* Primitive Structure */
 typedef struct tagtm5VERTEX
 {
-  VEC3 Vec;
+  VEC Vec;
 } tm5VERTEX;
 
 typedef struct tagtm5PRIM
@@ -52,7 +52,7 @@ VOID TM5_RndEnd( VOID );
 
 /* Camera & Primitive functions */
 VOID TM5_RndProjSet( VOID );
-VOID TM5_RndCamSet( VEC3 Loc, VEC3 At, VEC3 Up );
+VOID TM5_RndCamSet( VEC Loc, VEC At, VEC Up );
 VOID TM5_RndPrimDraw( tm5PRIM *Pr, MATR World );
 VOID TM5_RndPrimFree( tm5PRIM *Primitive );
 BOOL TM5_RndPrimCreate( tm5PRIM *Primitive, INT NofV, INT NofI );
