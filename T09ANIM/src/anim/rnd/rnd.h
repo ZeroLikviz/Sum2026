@@ -7,9 +7,16 @@
 #define __rnd_h_
 #define GLEW_STATIC
 #include <glew.h>
-
 #include <windows.h>
-#include "def.h"
+
+#include "anim/rnd/res/rndres.h"
+
+typedef enum tagtm5DRAW_MODE
+{
+  TM5_RND_TRIANGLES,
+  TM5_RND_WIREFRAME,
+  TM5_RND_POINTS
+} tm5DRAW_MODE;
 
 /* Primitive Structure */
 typedef struct tagtm5VERTEX
@@ -22,11 +29,12 @@ typedef struct tagtm5VERTEX
 
 typedef struct tagtm5PRIM
 {
-  tm5VERTEX *Vertices; /* Vertex attributes array */
-  INT NumOfV;          /* Number of vertices */
+  INT VertexArrayId;
+  INT VertexBufferId;
+  INT IndexBufferId;
+  INT NumOfElements;
 
-  INT *Indexes;        /* Index array (for trimesh – by 3 ones) */
-  INT NumOfI;          /* Number of indices */
+  tm5DRAW_MODE DrawMode;
 
   MATR Transform;      /* Additional transformation matrix */
 } tm5PRIM;
@@ -59,20 +67,19 @@ VOID TM5_RndProjSet( VOID );
 VOID TM5_RndCamSet( VEC Loc, VEC At, VEC Up );
 VOID TM5_RndPrimDraw( tm5PRIM *Pr, MATR World );
 VOID TM5_RndPrimFree( tm5PRIM *Primitive );
-BOOL TM5_RndPrimCreate( tm5PRIM *Primitive, INT NofV, INT NofI );
-BOOL TM5_RndPrimLoad( tm5PRIM *Primitive, CHAR *Filename );
+VOID TM5_RndPrimCreate( tm5PRIM *Primitive, tm5VERTEX *Vertices, INT NofV, INT *Indexes, INT NofI, tm5DRAW_MODE DrawMode );
+VOID TM5_RndPrimLoad( tm5PRIM *Primitive, CHAR *Filename );
 
-BOOL TM5_RndPrimCreateSphere( tm5PRIM *Primitive, DBL R, INT W, INT H );
-BOOL TM5_RndPrimCreateCylinder( tm5PRIM *Primitive, DBL R, DBL H, INT W);
-BOOL TM5_RndPrimCreateTorus( tm5PRIM *Primitive, DBL oR, DBL iR, INT tW, INT iW);
-VOID TM5_RndPrimPermanentApply( tm5PRIM *Primitive, MATR Matrix );
-VOID TM5_RndPrimRelocate( tm5PRIM *Primitive );
-VOID TM5_RndPrimRelocateMass( tm5PRIM *Primitive );
-VOID TM5_RndPrimResizeTo1( tm5PRIM *Primitive );
-VOID TM5_RndPrimStandartize( tm5PRIM *Primitive );
-VOID TM5_RndPrimCalculateNormals( tm5PRIM *Primitive );
-VOID TM5_RndPrimApplySun( tm5PRIM *Primitive, VEC SunPos );
-VOID TM5_RndPrimScale( tm5PRIM *Primitive, FLT Factor );
+VOID TM5_RndPrimCreateSphere( tm5PRIM *Primitive, DBL R, INT W, INT H );
+VOID TM5_RndPrimCreateCylinder( tm5PRIM *Primitive, DBL R, DBL H, INT W);
+VOID TM5_RndPrimCreateTorus( tm5PRIM *Primitive, DBL oR, DBL iR, INT tW, INT iW);
+VOID TM5_RndPrimPermanentApply( tm5VERTEX *Vertices, INT NumOfV, MATR Matrix );
+VOID TM5_RndPrimRelocate( tm5VERTEX *Vertices, INT NumOfV );
+VOID TM5_RndPrimResize( tm5VERTEX *Vertices, INT NumOfV );
+VOID TM5_RndPrimStandartize( tm5VERTEX *Vertices, INT NumOfV );
+VOID TM5_RndPrimCalculateNormals( tm5VERTEX *Vertices, INT NumOfV, INT *Indexes, INT NumOfI );
+VOID TM5_RndPrimApplySun( tm5VERTEX *Vertices, INT NumOfV, VEC SunPos );
+VOID TM5_RndPrimScale( tm5VERTEX *Vertices, INT NumOfV, FLT Factor );
 #endif
 
 /* End of 'rnd.h' file */

@@ -25,10 +25,10 @@ static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
   
   TM5_RndPrimLoad(&(rUnit->Model), "bin/models/real_furry.obj");
   
-  TM5_RndPrimPermanentApply(&(rUnit->Model), MatrRotateX(-90));
-  TM5_RndPrimStandartize(&(rUnit->Model));
-  TM5_RndPrimCalculateNormals(&(rUnit->Model));
-  TM5_RndPrimApplySun(&(rUnit->Model), VecSet3(1, 1, -0.4));
+  //TM5_RndPrimPermanentApply(&(rUnit->Model), MatrRotateX(-90));
+  //TM5_RndPrimStandartize(&(rUnit->Model));
+  //TM5_RndPrimCalculateNormals(&(rUnit->Model));
+  //TM5_RndPrimApplySun(&(rUnit->Model), VecSet3(1, 1, -0.4));
   rUnit->Pos = VecSet3(0, 0, 0);
 }
 

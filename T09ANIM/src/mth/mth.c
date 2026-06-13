@@ -440,4 +440,9 @@ FLT Sign( FLT X )
   return (X > 0) - (X < 0);
 }
 
+VEC Vec4to3( VEC4 Vec )
+{
+  return VecSet3(Vec.X, Vec.Y, Vec.Z);
+}
+
 /* End of 'mth.c' file */

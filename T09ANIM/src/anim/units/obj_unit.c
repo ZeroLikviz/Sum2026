@@ -28,10 +28,10 @@ static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
   
   TM5_RndPrimLoad(&(rUnit->Model), rUnit->ModelPath);
   
-  TM5_RndPrimStandartize(&(rUnit->Model));
-  TM5_RndPrimCalculateNormals(&(rUnit->Model));
-  TM5_RndPrimApplySun(&(rUnit->Model), VecSet3(4, 6, 3));
-  TM5_RndPrimScale(&(rUnit->Model), 200);
+  //TM5_RndPrimStandartize(&(rUnit->Model));
+  //TM5_RndPrimCalculateNormals(&(rUnit->Model));
+  //TM5_RndPrimApplySun(&(rUnit->Model), VecSet3(4, 6, 3));
+  //TM5_RndPrimScale(&(rUnit->Model), 200);
 }
 
 static VOID Close( tm5UNIT *Unit, tm5ANIM *Anim )

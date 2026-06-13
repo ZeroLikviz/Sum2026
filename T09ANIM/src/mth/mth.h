@@ -58,6 +58,7 @@ VEC VecMulMatr( VEC Vec, MATR Matrix );
 VEC VecRotateVec( VEC Axis, VEC Vec, FLT Degrees );
 VEC VecNormalize( VEC Vec );
 VEC4 Vec3to4( VEC Vec );
+VEC Vec4to3( VEC4 Vec );
 
 
 /***  ////////////////

@@ -236,6 +236,22 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="Resources"
+						>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndres.c"
+							>
+						</File>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndres.h"
+							>
+						</File>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndshd.c"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Timer"

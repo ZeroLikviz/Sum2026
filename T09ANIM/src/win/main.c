@@ -74,14 +74,15 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     TM5_AnimUnitAdd(TM5_UnitCreateCylinder());
     TM5_AnimUnitAdd(TM5_UnitCreateTorus());
 
-    
     TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/person.obj", VecSet3(0, 0, -4)));
     TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/rose+vase.obj", VecSet3(-4, 0, 0)));
     TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/spider.obj", VecSet3(4, 0, 0)));
-    TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/furry.obj", VecSet3(0, 4, 0)));
+    TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/real_furry.obj", VecSet3(0, 4, 0)));
     TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/city.obj", VecSet3(0, 0, 0)));
-    */
     TM5_AnimUnitAdd(TM5_UnitCreateFurry());
+    */
+    
+    TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/city.obj", VecSet3(0, 0, 0)));
     TM5_AnimUnitAdd(TM5_UnitCreateFPS());
     
     return 0;

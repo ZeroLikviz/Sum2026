@@ -68,9 +68,9 @@ VOID TM5_UpdateAnimTimer( VOID )
   TimerResponse();
 
   TM5_Animation.GlobalTime = GlobalTime;
-  TM5_Animation.GlobalDeltaTime = GlobalDeltaTime,
-  TM5_Animation.Time = Time,
-  TM5_Animation.DeltaTime = DeltaTime,
+  TM5_Animation.GlobalDeltaTime = GlobalDeltaTime;
+  TM5_Animation.Time = Time;
+  TM5_Animation.DeltaTime = DeltaTime;
   TM5_Animation.FPS = FPS;
 }
 
@@ -102,7 +102,7 @@ VOID TM5_AnimUnitAdd( tm5UNIT *Unit )
 
 VOID TM5_AnimExit()
 {
-  static IsExiting = FALSE;
+  static BOOL IsExiting = FALSE;
 
   if (IsExiting)
     return;

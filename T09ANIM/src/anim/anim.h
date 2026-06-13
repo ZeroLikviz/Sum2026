@@ -59,7 +59,11 @@ struct tagtm5ANIM
   tm5MOUSE Mouse;
 
   /* Joystick */
-  BYTE JBut[32], JButOld[32], JButClick[32];
+  BYTE JBut[32];
+  BYTE JButClick[32];
+  BYTE JButRelease[32];
+  BYTE JButOld[32];
+  
   INT JPov;
   DBL JX, JY, JZ, JR;
 
