@@ -10,9 +10,9 @@
  
 #include "anim/rnd/res/rndres.h"
 #include "anim/rnd/rnd.h"
- 
-/* Global shader */
-UINT TM5_RndProgId;
+
+tm5SHADER TM5_RndShaders[TM5_MAX_SHADERS];
+INT TM5_RndShadersSize;
  
 static VOID TM5_RndShdLog( CHAR *FileNamePrefix, CHAR *ShaderName, CHAR *Text )
 {
@@ -175,26 +175,41 @@ static VOID TM5_RndShdFree( UINT ProgId )
  
 VOID TM5_RndShdInit( VOID )
 {
-  TM5_RndProgId = TM5_RndShdLoad("default");
+  TM5_RndShdAdd("default");
 } /* End of 'TM5_RndResInit' function */
  
 VOID TM5_RndShdClose( VOID )
 {
-  TM5_RndShdFree(TM5_RndProgId);
+  INT i;
+
+  for (i = 0; i < TM5_RndShadersSize; i++)
+    TM5_RndShdFree(TM5_RndShaders[i].ProgId);
+  TM5_RndShadersSize = 0;
 } /* End of 'TM5_RndResInit' function */
  
 VOID TM5_RndShdUpdate( VOID )
 {
-  INT t = clock();
-  static INT old_time;
- 
-  if (t - old_time > 2 * CLOCKS_PER_SEC)
+  INT i;
+
+  for (i = 0; i < TM5_RndShadersSize; i++)
   {
-    TM5_RndShdFree(TM5_RndProgId);
-    TM5_RndProgId = TM5_RndShdLoad("default");
-    old_time = t;
+    TM5_RndShdFree(TM5_RndShaders[i].ProgId);
+    TM5_RndShaders[i].ProgId = TM5_RndShdLoad(TM5_RndShaders[i].Name);
   }
 } /* End of 'TM5_RndShdUpdate' function */
- 
+
+INT TM5_RndShdAdd( CHAR *ShaderFileNamePrefix )
+{
+  INT i;
+
+  for (i = 0; i < TM5_RndShadersSize; i++)
+    if (strcmp(ShaderFileNamePrefix, TM5_RndShaders[i].Name) == 0)
+      return i;
+  if (TM5_RndShadersSize >= TM5_MAX_SHADERS)
+    return 0;
+  strncpy(TM5_RndShaders[TM5_RndShadersSize].Name, ShaderFileNamePrefix, TM5_STR_MAX - 1);
+  TM5_RndShaders[TM5_RndShadersSize].ProgId = TM5_RndShdLoad(ShaderFileNamePrefix);
+  return TM5_RndShadersSize++;
+} /* End of 'TM5_RndShdAdd' function */
  
 /* END OF 'rndshd.c' FILE */

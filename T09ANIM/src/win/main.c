@@ -82,7 +82,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     TM5_AnimUnitAdd(TM5_UnitCreateFurry());
     */
     
-    TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/city.obj", VecSet3(0, 0, 0)));
+    //TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/city.obj", VecSet3(0, 0, 0)));
+    TM5_AnimUnitAdd(TM5_UnitCreateGame());
     TM5_AnimUnitAdd(TM5_UnitCreateFPS());
     
     return 0;

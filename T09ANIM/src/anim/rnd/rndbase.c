@@ -127,10 +127,10 @@ VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
     GL_POINTS;
 
   TM5_RndShdUpdate();
-  glUseProgram(TM5_RndProgId);
-  if ((loc = glGetUniformLocation(TM5_RndProgId, "MatrWVP")) != -1)
+  glUseProgram(TM5_RndShaders[0].ProgId);
+  if ((loc = glGetUniformLocation(TM5_RndShaders[0].ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, (VOID *)wvp.Values);
-  if ((loc = glGetUniformLocation(TM5_RndProgId, "Time")) != -1)
+  if ((loc = glGetUniformLocation(TM5_RndShaders[0].ProgId, "Time")) != -1)
     glUniform1f(loc, Time);
 
   glBindVertexArray(Primitive->VertexArrayId);

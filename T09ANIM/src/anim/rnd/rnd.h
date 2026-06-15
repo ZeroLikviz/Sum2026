@@ -70,9 +70,7 @@ VOID TM5_RndPrimFree( tm5PRIM *Primitive );
 VOID TM5_RndPrimCreate( tm5PRIM *Primitive, tm5VERTEX *Vertices, INT NofV, INT *Indexes, INT NofI, tm5DRAW_MODE DrawMode );
 VOID TM5_RndPrimLoad( tm5PRIM *Primitive, CHAR *Filename );
 
-VOID TM5_RndPrimCreateSphere( tm5PRIM *Primitive, DBL R, INT W, INT H );
-VOID TM5_RndPrimCreateCylinder( tm5PRIM *Primitive, DBL R, DBL H, INT W);
-VOID TM5_RndPrimCreateTorus( tm5PRIM *Primitive, DBL oR, DBL iR, INT tW, INT iW);
+VOID TM5_RndPrimCreateSquare( tm5PRIM *Primitive, DBL Size, VEC Color );
 VOID TM5_RndPrimPermanentApply( tm5VERTEX *Vertices, INT NumOfV, MATR Matrix );
 VOID TM5_RndPrimRelocate( tm5VERTEX *Vertices, INT NumOfV );
 VOID TM5_RndPrimResize( tm5VERTEX *Vertices, INT NumOfV );

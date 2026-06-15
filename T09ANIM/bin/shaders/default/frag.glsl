@@ -9,7 +9,7 @@ in vec3 DrawPos;
 
 void main( void )
 {
-  if (sin(DrawPos.x) * cos(DrawPos.y + 25 * Time) < cos(Time) - 0.3)
-    discard;
+  //if (sin(DrawPos.x) * cos(DrawPos.y + 25 * Time) < cos(Time) - 0.3)
+  //  discard;
   OutColor = DrawColor;
 }

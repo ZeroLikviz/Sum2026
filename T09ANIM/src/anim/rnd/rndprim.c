@@ -10,107 +10,28 @@
 
 #include "anim/rnd/rnd.h"
 
-VOID TM5_RndPrimCreateSphere( tm5PRIM *Primitive, DBL R, INT W, INT H )
+VOID TM5_RndPrimCreateSquare( tm5PRIM *Primitive, DBL Size, VEC Color )
 {
-  /*
-  INT i, j, k;
-  DBL theta, phi;
- 
-  if (!TM5_RndPrimCreate(Primitive, W * H, (H - 1) * (W - 1) * 2 * 3))
-    return FALSE;
- 
-  for (k = 0, i = 0, theta = 0; i < H; i++, theta += PI / (H - 1))
-    for (j = 0, phi = 0; j < W; j++, phi += 2 * PI / (W - 1))
-      Primitive->Vertices[k++].Vec = VecSet3(R * sin(theta) * sin(phi),
-                                             R * cos(theta),
-                                             R * sin(theta) * cos(phi));
+  tm5VERTEX Vertices[4] = {0};
+  INT Indexes[6] = {0};
+  INT i;
+  
+  Vertices[0].Vec = VecSet3(0, 0, 0);
+  Vertices[1].Vec = VecSet3(Size, 0, 0);
+  Vertices[2].Vec = VecSet3(Size, Size, 0);
+  Vertices[3].Vec = VecSet3(0, Size, 0);
 
-  for (k = 0, i = 0; i < H - 1; i++)
-    for (j = 0; j < W - 1; j++)
-    {
-      Primitive->Indexes[k++] = i * W + j;
-      Primitive->Indexes[k++] = i * W + j + 1;
-      Primitive->Indexes[k++] = (i + 1) * W + j;
-      
-      Primitive->Indexes[k++] = (i + 1) * W + j;
-      Primitive->Indexes[k++] = i * W + j + 1;
-      Primitive->Indexes[k++] = (i + 1) * W + j + 1;
-    }
-  */
-}
+  Indexes[0] = 0;
+  Indexes[1] = 1;
+  Indexes[2] = 3;
+  Indexes[3] = 3;
+  Indexes[4] = 1;
+  Indexes[5] = 2;
 
-VOID TM5_RndPrimCreateCylinder( tm5PRIM *Primitive, DBL R, DBL H, INT W )
-{
-  /*
-  INT i, sign, k;
-  DBL alpha;
- 
-  if (!TM5_RndPrimCreate(Primitive, W * 2 + 2, (W - 1) * 4 * 3 ))
-    return FALSE;
- 
-  Primitive->Vertices[0].Vec = VecSet3(0, -H / 2, 0);
-  Primitive->Vertices[1].Vec = VecSet3(0, H / 2, 0);
-  for (k = 2, sign = -1; sign < 2; sign += 2)
-    for (i = 0, alpha = 0; i < W; i++, alpha += DPI / (W - 1))
-      Primitive->Vertices[k++].Vec = VecSet3(R * cos(alpha),
-                                             sign * H / 2,
-                                             R * sin(alpha));
-  for (k = 0, i = 0; i < W - 1; i++)
-  {
-    Primitive->Indexes[k++] = 0;
-    Primitive->Indexes[k++] = i + 1 + 2;
-    Primitive->Indexes[k++] = i + 2;
-  }
-  for (i = 0; i < W - 1; i++)
-  {
-    Primitive->Indexes[k++] = 1;
-    Primitive->Indexes[k++] = i + W + 1 + 2;
-    Primitive->Indexes[k++] = i + W + 2;
-  }
-  for (i = 0; i < W - 1; i++)
-  {
-    Primitive->Indexes[k++] = i + 2;
-    Primitive->Indexes[k++] = i + W + 2;
-    Primitive->Indexes[k++] = i + W + 1 + 2;
+  for (i = 0; i < 4; i++)
+    Vertices[i].Color = Vec3to4(Color);
 
-    Primitive->Indexes[k++] = i + W + 1 + 2;
-    Primitive->Indexes[k++] = i + 1 + 2;
-    Primitive->Indexes[k++] = i + 2;
-  }
-  */
-}
-
-VOID TM5_RndPrimCreateTorus( tm5PRIM *Primitive, DBL oR, DBL iR, INT tW, INT iW )
-{
-  /*
-  INT i, j, k;
-  DBL alpha, beta;
- 
-  if (!TM5_RndPrimCreate(Primitive, tW * iW, (tW - 1) * (iW - 1) * 2 * 3))
-    return FALSE;
- 
-  for (i = 0, alpha = 0, k = 0; i < tW; i++, alpha += DPI / (tW - 1))
-  {
-    MATR MatrixY = MatrRotateY(R2D(alpha));
-    for (j = 0, beta = 0; j < iW; j++, beta += DPI / (iW - 1))
-      Primitive->Vertices[k++].Vec = VecMulMatr(VecSet3(oR + cos(beta) * iR +  iR,
-                                                        sin(beta) * iR,
-                                                        0),
-                                     MatrixY);
-  }
-
-  for (i = 0, k = 0; i < tW - 1; i++)
-    for (j = 0; j < iW - 1; j++)
-    {
-      Primitive->Indexes[k++] = i * iW + j;
-      Primitive->Indexes[k++] = (i + 1) * iW + j;
-      Primitive->Indexes[k++] = i * iW + j + 1;
-
-      Primitive->Indexes[k++] = (i + 1) * iW + j;
-      Primitive->Indexes[k++] = (i + 1) * iW + j + 1;
-      Primitive->Indexes[k++] = i * iW + j + 1;
-    }
-  */
+  TM5_RndPrimCreate(Primitive, Vertices, 4, Indexes, 6, TM5_RND_TRIANGLES);
 }
 
 VOID TM5_RndPrimPermanentApply( tm5VERTEX *Vertices, INT NumOfV, MATR Matrix )
