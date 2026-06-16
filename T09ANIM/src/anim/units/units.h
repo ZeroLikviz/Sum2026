@@ -13,5 +13,7 @@ tm5UNIT* TM5_UnitCreateObj( CHAR *Path, VEC Pos );
 tm5UNIT* TM5_UnitCreateFPS( VOID );
 tm5UNIT* TM5_UnitCreateControl( VOID );
 tm5UNIT* TM5_UnitCreateGame( VOID );
+tm5UNIT* TM5_UnitCreateSphere( VOID );
+tm5UNIT* TM5_UnitCreateHeightMap( CHAR *Filename );
 
 /* End of 'units.h' file */

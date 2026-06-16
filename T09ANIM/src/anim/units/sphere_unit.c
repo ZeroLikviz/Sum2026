@@ -1,4 +1,4 @@
-/* FILE NAME: obj_unit.c
+/* FILE NAME: sphere_unit.c
  * PROGRAMMER: TM5
  * DATE: 10.06.2026
  * PURPOSE: Implement animation system.
@@ -6,50 +6,49 @@
 
 #include "anim/units/units.h"
 
-#define MaxPathLen 2048
-
-/* Obj Unit */
-typedef struct tagtm5UNIT_OBJ tm5UNIT_OBJ;
-struct tagtm5UNIT_OBJ
+/* Sphere Unit */
+typedef struct tagtm5UNIT_SPHERE tm5UNIT_SPHERE;
+struct tagtm5UNIT_SPHERE
 {
   VOID (*Init)( tm5UNIT *Unit, tm5ANIM *Anim );
   VOID (*Close)( tm5UNIT *Unit, tm5ANIM *Anim );
   VOID (*Response)( tm5UNIT *Unit, tm5ANIM *Anim );
   VOID (*Render)( tm5UNIT *Unit, tm5ANIM *Anim );
   
-  CHAR ModelPath[MaxPathLen];
   tm5PRIM Model;
   VEC Pos;
 };
 
 static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
 {
-  tm5UNIT_OBJ *rUnit = (tm5UNIT_OBJ*)(Unit);
-  
-  TM5_RndPrimLoad(&(rUnit->Model), rUnit->ModelPath);
+  tm5UNIT_SPHERE *rUnit = (tm5UNIT_SPHERE*)(Unit);
+  tm5GRID SphereGrid;
+
+  memset(&SphereGrid, 0, sizeof(tm5GRID));
+  TM5_RndGridCreateSphere(&SphereGrid, 1, 20, 20);
+  TM5_RndPrimFromGrid(&(rUnit->Model), &SphereGrid);
 }
 
 static VOID Close( tm5UNIT *Unit, tm5ANIM *Anim )
 {
-  tm5UNIT_OBJ *rUnit = (tm5UNIT_OBJ*)(Unit);
+  tm5UNIT_SPHERE *rUnit = (tm5UNIT_SPHERE*)(Unit);
   
   TM5_RndPrimFree(&(rUnit->Model));
-  memset(rUnit, 0, sizeof(tm5UNIT_OBJ));
+  memset(rUnit, 0, sizeof(tm5UNIT_SPHERE));
 }
 
 static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 {
-  tm5UNIT_OBJ *rUnit = (tm5UNIT_OBJ*)(Unit);
+  tm5UNIT_SPHERE *rUnit = (tm5UNIT_SPHERE*)(Unit);
 
   TM5_RndPrimDraw(&(rUnit->Model), MatrTranslate(rUnit->Pos));
 }
 
-tm5UNIT* TM5_UnitCreateObj( CHAR *Path, VEC Pos )
+tm5UNIT* TM5_UnitCreateSphere( VOID )
 {
-  tm5UNIT_OBJ *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_OBJ));
+  tm5UNIT_SPHERE *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_SPHERE));
 
-  strcpy(NewUnit->ModelPath, Path);
-  NewUnit->Pos = Pos;
+  NewUnit->Pos = VecSet3(0, 0, 0);
   NewUnit->Init = Init;
   NewUnit->Close = Close;
   NewUnit->Render = Render;
@@ -58,4 +57,4 @@ tm5UNIT* TM5_UnitCreateObj( CHAR *Path, VEC Pos )
   return (VOID *)NewUnit;
 }
 
-/* End of 'obj_unit.c' file */
+/* End of 'sphere_unit.c' file */

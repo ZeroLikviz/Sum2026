@@ -5,8 +5,6 @@
  */
 #include <windows.h>
 #include <math.h>
-// #include <glew.h>
-// #include <gl/gl.h>
 
 #include "anim/units/units.h"
 
@@ -80,11 +78,13 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/real_furry.obj", VecSet3(0, 4, 0)));
     TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/city.obj", VecSet3(0, 0, 0)));
     TM5_AnimUnitAdd(TM5_UnitCreateFurry());
+    TM5_AnimUnitAdd(TM5_UnitCreateGame());
+    TM5_AnimUnitAdd(TM5_UnitCreateSphere());
     */
     
-    //TM5_AnimUnitAdd(TM5_UnitCreateObj("bin/models/city.obj", VecSet3(0, 0, 0)));
-    TM5_AnimUnitAdd(TM5_UnitCreateGame());
-    TM5_AnimUnitAdd(TM5_UnitCreateFPS());
+    TM5_AnimUnitAdd(TM5_UnitCreateHeightMap("face.bmp"));
+    //TM5_AnimUnitAdd(TM5_UnitCreateGame());
+    //TM5_AnimUnitAdd(TM5_UnitCreateFPS());
     
     return 0;
   case WM_SIZE:

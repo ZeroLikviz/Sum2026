@@ -31,6 +31,11 @@ VEC VecSet3( FLT X, FLT Y, FLT Z )
   return NewVec;
 } /* End of 'VecSet3' function */
 
+VEC2 VecSet2( FLT X, FLT Y )
+{
+  VEC2 NewVec = {X, Y};
+  return NewVec;
+}
 
 /*  VecAddVec Sums vectors.
  *  Parameters:

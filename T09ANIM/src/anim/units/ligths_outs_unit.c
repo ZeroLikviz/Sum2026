@@ -102,6 +102,8 @@ tm5UNIT* TM5_UnitCreateGame( VOID )
   NewUnit->Close = Close;
   NewUnit->Response = Response;
   NewUnit->Render = Render;
+  NewUnit->Yes.ProgId = TM5_RndShdAdd("default");
+  NewUnit->No.ProgId = TM5_RndShdAdd("default");
 
   return (VOID *)NewUnit;
 }

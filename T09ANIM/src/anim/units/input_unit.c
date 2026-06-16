@@ -203,10 +203,11 @@ static VOID ProcessMouse( tm5ANIM *Anim )
     CamDir = VecMulMatr(CamDir, MatrRotateY(-Anim->Mouse.dX * MSensitivity));
     Right = VecCross(CamDir, VecUp);
     CamAngleX += -Anim->Mouse.dY * MSensitivity;
-    if (CamAngleX > -89 && CamAngleX < 89)
-      CamDir = VecRotateVec(Right, CamDir, -Anim->Mouse.dY * MSensitivity);
-    else
+    if (CamAngleX < -89 || CamAngleX > 89)
       CamAngleX = 89 * Sign(CamAngleX);
+    CamDir.Y = 0;
+    CamDir = VecNormalize(CamDir);
+    CamDir = VecRotateVec(Right, CamDir, CamAngleX);
   }
 } /* End of 'ProcessMouse' function */
 

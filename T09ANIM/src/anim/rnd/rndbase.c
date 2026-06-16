@@ -40,8 +40,11 @@ VOID TM5_RndInit( HWND hWnd )
   TM5_hRndGLRC = wglCreateContext(TM5_hRndDC);
   wglMakeCurrent(TM5_hRndDC, TM5_hRndGLRC);
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_PRIMITIVE_RESTART);
 
   glewInit();
+  
+  glPrimitiveRestartIndex(-1);
 
   TM5_RndFrameW = 0;
   TM5_RndFrameH = 0;
@@ -78,7 +81,7 @@ VOID TM5_RndCopyFrame( VOID )
 
 VOID TM5_RndStart( VOID )
 {
-  VEC4 ClearColor = {0.2, 0.0, 0.0, 1};
+  VEC4 ClearColor = {1.0, 1.0, 1.0, 1};
   FLT DepthClearValue = 1;
 
   glClearBufferfv(GL_COLOR, 0, &ClearColor.X);
@@ -120,17 +123,22 @@ VOID TM5_RndCamSet( VEC Loc, VEC At, VEC Up )
 VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
 {
   MATR wvp = MatrMulMatr3(Primitive->Transform, World, TM5_RndMatrVP);
+  MATR inv = MatrInverse(Primitive->Transform);
   INT loc,
     prim_type =
     Primitive->DrawMode == TM5_RND_WIREFRAME ? GL_LINES :
     Primitive->DrawMode == TM5_RND_TRIANGLES ? GL_TRIANGLES :
+    Primitive->DrawMode == TM5_RND_TRISTRIP ? GL_TRIANGLE_STRIP :
     GL_POINTS;
+  INT ProgId = TM5_RndShaders[Primitive->ProgId].ProgId;
 
   TM5_RndShdUpdate();
-  glUseProgram(TM5_RndShaders[0].ProgId);
-  if ((loc = glGetUniformLocation(TM5_RndShaders[0].ProgId, "MatrWVP")) != -1)
+  glUseProgram(ProgId);
+  if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, (VOID *)wvp.Values);
-  if ((loc = glGetUniformLocation(TM5_RndShaders[0].ProgId, "Time")) != -1)
+  if ((loc = glGetUniformLocation(ProgId, "MatrInv")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, (VOID *)inv.Values);
+  if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
     glUniform1f(loc, Time);
 
   glBindVertexArray(Primitive->VertexArrayId);

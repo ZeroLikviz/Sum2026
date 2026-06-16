@@ -47,6 +47,7 @@ typedef struct tagMATRIX
  ***/ ////////////////
 VEC4 VecSet4( FLT X, FLT Y, FLT Z, FLT W );
 VEC VecSet3( FLT X, FLT Y, FLT Z );
+VEC2 VecSet2( FLT X, FLT Y );
 VEC VecAddVec( VEC A, VEC B );
 VEC VecSubVec( VEC A, VEC B );
 FLT VecLen2( VEC Vec );

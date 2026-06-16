@@ -15,6 +15,7 @@ typedef enum tagtm5DRAW_MODE
 {
   TM5_RND_TRIANGLES,
   TM5_RND_WIREFRAME,
+  TM5_RND_TRISTRIP,
   TM5_RND_POINTS
 } tm5DRAW_MODE;
 
@@ -37,7 +38,15 @@ typedef struct tagtm5PRIM
   tm5DRAW_MODE DrawMode;
 
   MATR Transform;      /* Additional transformation matrix */
+
+  INT ProgId;
 } tm5PRIM;
+
+typedef struct tagtm5GRID
+{
+  INT W, H;      /* Grid size (in vertices) */
+  tm5VERTEX *Vertices;  /* Array (2D) of vertex */
+} tm5GRID;
 
 /* Renderer Data */
 extern HWND TM5_hRndWnd;                 /* Work window handle */
@@ -78,6 +87,14 @@ VOID TM5_RndPrimStandartize( tm5VERTEX *Vertices, INT NumOfV );
 VOID TM5_RndPrimCalculateNormals( tm5VERTEX *Vertices, INT NumOfV, INT *Indexes, INT NumOfI );
 VOID TM5_RndPrimApplySun( tm5VERTEX *Vertices, INT NumOfV, VEC SunPos );
 VOID TM5_RndPrimScale( tm5VERTEX *Vertices, INT NumOfV, FLT Factor );
+
+/* Grid Functions */
+INT TM5_RndGridCreate( tm5GRID *Grid, INT W, INT H );
+VOID TM5_RndGridFree( tm5GRID *Grid );
+VOID TM5_RndPrimFromGrid( tm5PRIM *Primitive, tm5GRID *Grid );
+VOID TM5_RndGridAutoNormals( tm5GRID *Grid );
+VOID TM5_RndGridCreateSphere( tm5GRID *Grid, DBL R, INT W, INT H );
+VOID TM5_RndGridCreateHeightMap( tm5GRID *Grid, CHAR *Filename );
 #endif
 
 /* End of 'rnd.h' file */

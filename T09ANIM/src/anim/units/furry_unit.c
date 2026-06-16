@@ -25,10 +25,6 @@ static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
   
   TM5_RndPrimLoad(&(rUnit->Model), "bin/models/real_furry.obj");
   
-  //TM5_RndPrimPermanentApply(&(rUnit->Model), MatrRotateX(-90));
-  //TM5_RndPrimStandartize(&(rUnit->Model));
-  //TM5_RndPrimCalculateNormals(&(rUnit->Model));
-  //TM5_RndPrimApplySun(&(rUnit->Model), VecSet3(1, 1, -0.4));
   rUnit->Pos = VecSet3(0, 0, 0);
 }
 
@@ -43,8 +39,6 @@ static VOID Close( tm5UNIT *Unit, tm5ANIM *Anim )
 static VOID Response( tm5UNIT *Unit, tm5ANIM *Anim )
 {
   tm5UNIT_FURRY *rUnit = (tm5UNIT_FURRY*)(Unit);
-  
-  //rUnit->Model.Transform = MatrMulMatr(rUnit->Model.Transform, MatrRotateY(-Anim->DeltaTime * 25));
 }
 
 static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
@@ -67,6 +61,7 @@ tm5UNIT* TM5_UnitCreateFurry( VOID )
   NewUnit->Close = Close;
   NewUnit->Response = Response;
   NewUnit->Render = Render;
+  NewUnit->Model.ProgId = TM5_RndShdAdd("default");
 
   return (VOID *)NewUnit;
 }
