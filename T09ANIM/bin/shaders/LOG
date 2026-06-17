@@ -1,8 +1,7 @@
-default : VERT
-0(17) : error C7011: implicit cast from "vec4" to "vec3"
-
-
-default : VERT
-0(17) : error C7011: implicit cast from "vec4" to "vec3"
+default : FRAG
+0(24) : error C1503: undefined variable "color"
+0(26) : error C1503: undefined variable "color"
+0(27) : error C1503: undefined variable "color"
+0(28) : error C1503: undefined variable "color"
 
 

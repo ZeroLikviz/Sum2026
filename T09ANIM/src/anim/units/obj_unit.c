@@ -47,13 +47,14 @@ static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 tm5UNIT* TM5_UnitCreateObj( CHAR *Path, VEC Pos )
 {
   tm5UNIT_OBJ *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_OBJ));
+  tm5MATERIAL Material = TM5_RndMtlGetDef();
 
   strcpy(NewUnit->ModelPath, Path);
   NewUnit->Pos = Pos;
   NewUnit->Init = Init;
   NewUnit->Close = Close;
   NewUnit->Render = Render;
-  NewUnit->Model.ProgId = TM5_RndShdAdd("default");
+  NewUnit->Model.MtlNumber = TM5_RndMtlAdd(&Material);
 
   return (VOID *)NewUnit;
 }

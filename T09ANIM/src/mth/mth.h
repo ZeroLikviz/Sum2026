@@ -6,6 +6,7 @@
 #ifndef __mth_h_
 #define __mth_h_
 #include <windows.h>
+#include <math.h>
 
 #define PI 3.141592653589793238462643
 #define DPI (2 * PI)

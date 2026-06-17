@@ -10,10 +10,15 @@ uniform mat4 MatrInv;
 
 out vec4 DrawColor;
 out vec3 DrawNormal;
+out vec3 DrawPos;
+out vec3 DrawPosOrg;
 
 void main( void )
 {
-  gl_Position = MatrWVP * vec4(InPosition, 1);
+  vec4 NewPos = MatrWVP * vec4(InPosition, 1);
+  gl_Position = NewPos;
   DrawColor = InColor;
   DrawNormal = (MatrInv * vec4(InNormal, 1)).xyz;
+  DrawPos = NewPos.xyz;
+  DrawPosOrg = InPosition;
 }

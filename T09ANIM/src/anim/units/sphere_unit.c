@@ -47,12 +47,13 @@ static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 tm5UNIT* TM5_UnitCreateSphere( VOID )
 {
   tm5UNIT_SPHERE *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_SPHERE));
+  tm5MATERIAL Material = TM5_RndMtlGetDef();
 
   NewUnit->Pos = VecSet3(0, 0, 0);
   NewUnit->Init = Init;
   NewUnit->Close = Close;
   NewUnit->Render = Render;
-  NewUnit->Model.ProgId = TM5_RndShdAdd("default");
+  NewUnit->Model.MtlNumber = TM5_RndMtlAdd(&Material);
 
   return (VOID *)NewUnit;
 }

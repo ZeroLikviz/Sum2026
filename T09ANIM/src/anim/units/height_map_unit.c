@@ -23,11 +23,13 @@ struct tagtm5UNIT_HEIGHT_MAP
 static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
 {
   tm5UNIT_HEIGHT_MAP *rUnit = (tm5UNIT_HEIGHT_MAP*)(Unit);
+  tm5MATERIAL Material = TM5_RndMtlGetStock("Silver");
   tm5GRID Grid;
 
   memset(&Grid, 0, sizeof(tm5GRID));
   TM5_RndGridCreateHeightMap(&Grid, rUnit->Filename);
   TM5_RndPrimFromGrid(&(rUnit->Model), &Grid);
+  rUnit->Model.MtlNumber = TM5_RndMtlAdd(&Material);
 }
 
 static VOID Close( tm5UNIT *Unit, tm5ANIM *Anim )
@@ -54,7 +56,6 @@ tm5UNIT* TM5_UnitCreateHeightMap( CHAR *Filename )
   NewUnit->Init = Init;
   NewUnit->Close = Close;
   NewUnit->Render = Render;
-  NewUnit->Model.ProgId = TM5_RndShdAdd("default");
 
   return (VOID *)NewUnit;
 }

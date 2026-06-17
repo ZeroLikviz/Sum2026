@@ -97,13 +97,14 @@ static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 tm5UNIT* TM5_UnitCreateGame( VOID )
 {
   tm5UNIT_GAME *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_GAME));
+  tm5MATERIAL Material = TM5_RndMtlGetDef();
 
   NewUnit->Init = Init;
   NewUnit->Close = Close;
   NewUnit->Response = Response;
   NewUnit->Render = Render;
-  NewUnit->Yes.ProgId = TM5_RndShdAdd("default");
-  NewUnit->No.ProgId = TM5_RndShdAdd("default");
+  NewUnit->Yes.MtlNumber = TM5_RndMtlAdd(&Material);
+  NewUnit->No.MtlNumber = TM5_RndMtlAdd(&Material);
 
   return (VOID *)NewUnit;
 }

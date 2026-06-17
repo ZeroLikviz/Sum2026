@@ -56,12 +56,13 @@ static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 tm5UNIT* TM5_UnitCreateFurry( VOID )
 {
   tm5UNIT_FURRY *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_FURRY));
+  tm5MATERIAL Material = TM5_RndMtlGetDef();
 
   NewUnit->Init = Init;
   NewUnit->Close = Close;
   NewUnit->Response = Response;
   NewUnit->Render = Render;
-  NewUnit->Model.ProgId = TM5_RndShdAdd("default");
+  NewUnit->Model.MtlNumber = TM5_RndMtlAdd(&Material);
 
   return (VOID *)NewUnit;
 }

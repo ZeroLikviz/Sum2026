@@ -130,10 +130,10 @@ VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
     Primitive->DrawMode == TM5_RND_TRIANGLES ? GL_TRIANGLES :
     Primitive->DrawMode == TM5_RND_TRISTRIP ? GL_TRIANGLE_STRIP :
     GL_POINTS;
-  INT ProgId = TM5_RndShaders[Primitive->ProgId].ProgId;
+  INT ProgId = TM5_RndShaders[TM5_RndMaterials[Primitive->MtlNumber].ShaderNumber].ProgId;
 
-  TM5_RndShdUpdate();
-  glUseProgram(ProgId);
+  TM5_RndMtlApply(Primitive->MtlNumber);
+
   if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, (VOID *)wvp.Values);
   if ((loc = glGetUniformLocation(ProgId, "MatrInv")) != -1)

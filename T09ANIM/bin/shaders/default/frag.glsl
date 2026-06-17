@@ -2,18 +2,30 @@
 
 layout(location = 0) out vec4 OutColor;
 
-uniform float Time;
-
 in vec4 DrawColor;
 in vec3 DrawNormal;
+in vec3 DrawPos;
+in vec3 DrawPosOrg;
+
+uniform vec3 CamLoc;
+uniform float Time, GlobalTime;
+uniform vec3, Ka, Kd, Ks;
+uniform float Ph;
 
 void main( void )
 {
-  vec3 LightDir = vec3(1, -1, 1);
-  float Strength = dot(LightDir, DrawNormal) * 2 - 1;
+  vec3 LightPos = vec3(10 * sin(Time), 40, 10 * cos(Time));
+  vec3 Normal = normalize(DrawNormal);
+  vec3 Color = vec3(0.1, 0.1, 0.1);
+  vec3 Direction = normalize(DrawPos - CamLoc);
+  vec3 Reflected = reflect(Direction, Normal);
+  vec3 ToLight = normalize(LightPos - DrawPos);
   
-  if (Strength < 0.5)
-    Strength = 0.5;
+  Color = vec3(0);
+  
+  Color += Ka;
+  Color += Kd * max(0, (dot(Normal, ToLight) + 1.0) / 2.0);
+  Color += Ks * max(0, pow((dot(Reflected, ToLight) + 1.0) / 2.0, Ph));
 
-  OutColor = DrawColor * Strength;
+  OutColor = vec4(Color, 1);
 }

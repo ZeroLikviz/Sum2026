@@ -39,7 +39,8 @@ typedef struct tagtm5PRIM
 
   MATR Transform;      /* Additional transformation matrix */
 
-  INT ProgId;
+  INT MtlNumber;
+
 } tm5PRIM;
 
 typedef struct tagtm5GRID
@@ -95,6 +96,7 @@ VOID TM5_RndPrimFromGrid( tm5PRIM *Primitive, tm5GRID *Grid );
 VOID TM5_RndGridAutoNormals( tm5GRID *Grid );
 VOID TM5_RndGridCreateSphere( tm5GRID *Grid, DBL R, INT W, INT H );
 VOID TM5_RndGridCreateHeightMap( tm5GRID *Grid, CHAR *Filename );
+
 #endif
 
 /* End of 'rnd.h' file */
