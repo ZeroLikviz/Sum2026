@@ -313,6 +313,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\src\anim\units\texture_rect_unit.c"
+						>
+					</File>
+					<File
 						RelativePath=".\src\anim\units\units.h"
 						>
 					</File>

@@ -79,6 +79,14 @@ static VOID Response( tm5UNIT *Unit, tm5ANIM *Anim )
     rUnit->States[GetPos(tX - 1, tY)] = !rUnit->States[GetPos(tX - 1, tY)];
     rUnit->States[GetPos(tX, tY + 1)] = !rUnit->States[GetPos(tX, tY + 1)];
   }
+
+  if (Anim->Keys['R'])
+  {
+    INT i;
+
+    for (i = 0; i < 8; i++)
+      rUnit->States[i] = rand() % 2;
+  }
 }
 
 static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )

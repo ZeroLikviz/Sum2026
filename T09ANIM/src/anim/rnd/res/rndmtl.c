@@ -132,6 +132,8 @@ UINT TM5_RndMtlApply( INT MtlNo )
   /* Set textures */
   for (i = 0; i < 8; i++)
   {
+    glActiveTexture(GL_TEXTURE0 + i + 1);
+    glBindTexture(GL_TEXTURE_2D, TM5_RndTextures[mtl->Textures[i]].TexId);
   }
 
   return prg;

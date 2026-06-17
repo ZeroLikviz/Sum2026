@@ -21,6 +21,11 @@ VOID TM5_RndPrimCreateSquare( tm5PRIM *Primitive, DBL Size, VEC Color )
   Vertices[2].Vec = VecSet3(Size, Size, 0);
   Vertices[3].Vec = VecSet3(0, Size, 0);
 
+  Vertices[0].Texture = VecSet2(0, 0);
+  Vertices[1].Texture = VecSet2(1, 0);
+  Vertices[2].Texture = VecSet2(1, 1);
+  Vertices[3].Texture = VecSet2(0, 1);
+
   Indexes[0] = 0;
   Indexes[1] = 1;
   Indexes[2] = 3;

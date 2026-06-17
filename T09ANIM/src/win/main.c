@@ -80,8 +80,10 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     TM5_AnimUnitAdd(TM5_UnitCreateFurry());
     TM5_AnimUnitAdd(TM5_UnitCreateGame());
     TM5_AnimUnitAdd(TM5_UnitCreateSphere());
+    TM5_AnimUnitAdd(TM5_UnitCreateTextureRect("sonic.bmp"));
     */
     
+    TM5_AnimUnitAdd(TM5_UnitCreateTextureRect("sonic.bmp"));
     TM5_AnimUnitAdd(TM5_UnitCreateHeightMap("map.bmp"));
     //TM5_AnimUnitAdd(TM5_UnitCreateGame());
     //TM5_AnimUnitAdd(TM5_UnitCreateFPS());

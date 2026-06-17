@@ -5,3 +5,26 @@ default : FRAG
 0(28) : error C1503: undefined variable "color"
 
 
+default : FRAG
+0(19) : error C7011: implicit cast from "vec4" to "vec3"
+
+
+texture : FRAG
+0(7) : error C7532: layout(binding) requires "#version 420" or later
+0(7) : error C0000: ... or #extension GL_ARB_shading_language_420pack : enable
+0(7) : error C7514: OpenGL does not allow varying of type sampler2D
+0(7) : error C7554: OpenGL requires sampler variables to be explicitly declared as uniform
+
+
+texture : FRAG
+0(7) : error C7532: layout(binding) requires "#version 420" or later
+0(7) : error C0000: ... or #extension GL_ARB_shading_language_420pack : enable
+0(7) : error C7514: OpenGL does not allow varying of type sampler2D
+0(7) : error C7554: OpenGL requires sampler variables to be explicitly declared as uniform
+
+
+texture : FRAG
+0(7) : error C7514: OpenGL does not allow varying of type sampler2D
+0(7) : error C7554: OpenGL requires sampler variables to be explicitly declared as uniform
+
+

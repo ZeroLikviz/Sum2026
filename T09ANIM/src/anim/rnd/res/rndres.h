@@ -43,11 +43,18 @@ typedef struct tagtm5MATERIAL
 
 VOID TM5_RndResInit( VOID );
 VOID TM5_RndResClose( VOID );
+VOID TM5_RndResBindTexture( INT MtlNum, INT TexNum );
 
+/* Shader Functions */
 VOID TM5_RndShdInit( VOID ); 
 VOID TM5_RndShdClose( VOID ); 
 VOID TM5_RndShdUpdate( VOID );
 INT TM5_RndShdAdd( CHAR *ShaderFileNamePrefix );
+
+VOID TM5_RndTexInit( VOID );
+VOID TM5_RndTexClose( VOID );
+INT TM5_RndTexAddImg( CHAR *Name, INT W, INT H, INT C, VOID *Bits );
+INT TM5_RndTexAdd( CHAR *Filename );
 
 /* Material Functions */
 tm5MATERIAL TM5_RndMtlGetDef( VOID );

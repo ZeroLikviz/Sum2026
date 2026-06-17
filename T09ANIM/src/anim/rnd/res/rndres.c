@@ -18,4 +18,16 @@ VOID TM5_RndResClose( VOID )
   TM5_RndShdClose();
 }
 
+VOID TM5_RndResBindTexture( INT MtlNum, INT TexNum )
+{
+  INT i;
+
+  for (i = 0; i < 8; i++)
+    if (TM5_RndMaterials[MtlNum].Textures[i] == -1)
+    {
+      TM5_RndMaterials[MtlNum].Textures[i] = TexNum;
+      break;
+    }
+}
+
 /* End of 'rndres.c' file */
