@@ -102,8 +102,8 @@ VOID TM5_RndGridCreateSphere( tm5GRID *Grid, DBL R, INT W, INT H )
       DBL Alpha = (DBL)i / (Grid->W - 1) * DPI;
       DBL Beta = (DBL)j / (Grid->H - 1) * PI;
       Grid->Vertices[j * Grid->W + i].Vec = VecSet3(R * sin(Alpha) * sin(Beta), R * cos(Beta), R * cos(Alpha) * sin(Beta));
+      Grid->Vertices[j * Grid->W + i].Normal = VecNormalize(Grid->Vertices[j * Grid->W + i].Vec);
     }
-  TM5_RndGridAutoNormals(Grid);
 }
 
 VOID TM5_RndGridCreateHeightMap( tm5GRID *Grid, CHAR *Filename )
@@ -129,7 +129,9 @@ VOID TM5_RndGridCreateHeightMap( tm5GRID *Grid, CHAR *Filename )
         {
           INT hgt = Bits[(h - 1 - y) * bm.bmWidthBytes + x];
 
-          Grid->Vertices[y * w + x].Vec = VecScale(VecSet3(x / (w - 1.0), hgt / 255.0 / 20, 1 - y / (h - 1.0)), 128);
+          Grid->Vertices[y * w + x].Vec = VecScale(VecSet3(2.0 * x / (w - 1.0) - 1,
+                                                           hgt / 255.0 / 2,
+                                                           2.0 * y / (h - 1.0) - 1), 64);
         }
       TM5_RndGridAutoNormals(Grid);
     }

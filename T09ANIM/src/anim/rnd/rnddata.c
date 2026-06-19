@@ -18,4 +18,8 @@ DBL TM5_RndProjFarClip = 2048;  /* Distance to project far clip plane (far) */
 MATR TM5_RndMatrView; /* View coordinate system matrix */
 MATR TM5_RndMatrProj; /* Projection coordinate system matrix */
 MATR TM5_RndMatrVP;   /* Stored (View * Proj) matrix */
+
+INT TM5_RndShdAddonI[8] = {0};
+FLT TM5_RndShdAddonF[8] = {0};
+VEC TM5_RndShdAddonV[8] = {0};
 /* End of 'rnddata.c' file */

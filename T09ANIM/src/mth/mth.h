@@ -61,6 +61,9 @@ VEC VecRotateVec( VEC Axis, VEC Vec, FLT Degrees );
 VEC VecNormalize( VEC Vec );
 VEC4 Vec3to4( VEC Vec );
 VEC Vec4to3( VEC4 Vec );
+VEC VecMinVec( VEC Vec1, VEC Vec2 );
+VEC VecMaxVec( VEC Vec1, VEC Vec2 );
+FLT VecMaxValue( VEC Vec );
 
 
 /***  ////////////////
@@ -85,6 +88,7 @@ MATR MatrTranspose( MATR Matrix );
 MATR MatrView( VEC Loc, VEC At, VEC Up1 );
 MATR MatrFrustum( FLT Left, FLT Right, FLT Top, FLT Bottom, FLT Near, FLT Far );
 MATR MatrScale1( FLT X );
+MATR MatrDescale1( FLT X );
 
 FLT Sign( FLT X );
 #endif

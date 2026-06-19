@@ -23,7 +23,7 @@ struct tagtm5UNIT_HEIGHT_MAP
 static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
 {
   tm5UNIT_HEIGHT_MAP *rUnit = (tm5UNIT_HEIGHT_MAP*)(Unit);
-  tm5MATERIAL Material = TM5_RndMtlGetStock("Silver");
+  tm5MATERIAL Material = TM5_RndMtlGetStock("Copper");
   tm5GRID Grid;
 
   memset(&Grid, 0, sizeof(tm5GRID));

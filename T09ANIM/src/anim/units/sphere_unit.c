@@ -23,10 +23,12 @@ static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
 {
   tm5UNIT_SPHERE *rUnit = (tm5UNIT_SPHERE*)(Unit);
   tm5GRID SphereGrid;
+  tm5MATERIAL Material = TM5_RndMtlGetDef();
 
   memset(&SphereGrid, 0, sizeof(tm5GRID));
   TM5_RndGridCreateSphere(&SphereGrid, 1, 20, 20);
   TM5_RndPrimFromGrid(&(rUnit->Model), &SphereGrid);
+  rUnit->Model.MtlNumber = TM5_RndMtlAdd(&Material);
 }
 
 static VOID Close( tm5UNIT *Unit, tm5ANIM *Anim )
@@ -47,13 +49,11 @@ static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 tm5UNIT* TM5_UnitCreateSphere( VOID )
 {
   tm5UNIT_SPHERE *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_SPHERE));
-  tm5MATERIAL Material = TM5_RndMtlGetDef();
 
   NewUnit->Pos = VecSet3(0, 0, 0);
   NewUnit->Init = Init;
   NewUnit->Close = Close;
   NewUnit->Render = Render;
-  NewUnit->Model.MtlNumber = TM5_RndMtlAdd(&Material);
 
   return (VOID *)NewUnit;
 }

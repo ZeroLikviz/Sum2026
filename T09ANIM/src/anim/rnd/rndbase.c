@@ -41,10 +41,12 @@ VOID TM5_RndInit( HWND hWnd )
   wglMakeCurrent(TM5_hRndDC, TM5_hRndGLRC);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_PRIMITIVE_RESTART);
+  glEnable(GL_BLEND);
 
   glewInit();
   
   glPrimitiveRestartIndex(-1);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   TM5_RndFrameW = 0;
   TM5_RndFrameH = 0;
@@ -81,7 +83,7 @@ VOID TM5_RndCopyFrame( VOID )
 
 VOID TM5_RndStart( VOID )
 {
-  VEC4 ClearColor = {1.0, 1.0, 1.0, 1};
+  VEC4 ClearColor = {0.8, 0.8, 0.8, 1};
   FLT DepthClearValue = 1;
 
   glClearBufferfv(GL_COLOR, 0, &ClearColor.X);
@@ -130,14 +132,16 @@ VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
     Primitive->DrawMode == TM5_RND_TRIANGLES ? GL_TRIANGLES :
     Primitive->DrawMode == TM5_RND_TRISTRIP ? GL_TRIANGLE_STRIP :
     GL_POINTS;
-  INT ProgId = TM5_RndShaders[TM5_RndMaterials[Primitive->MtlNumber].ShaderNumber].ProgId;
+  // = TM5_RndShaders[TM5_RndMaterials[Primitive->MtlNumber].ShaderNumber].ProgId;
 
-  TM5_RndMtlApply(Primitive->MtlNumber);
+  INT ProgId = TM5_RndMtlApply(Primitive->MtlNumber);
 
   if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, (VOID *)wvp.Values);
   if ((loc = glGetUniformLocation(ProgId, "MatrInv")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, (VOID *)inv.Values);
+  if ((loc = glGetUniformLocation(ProgId, "MatrW")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, (VOID *)TM5_RndMatrView.Values);
   if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
     glUniform1f(loc, Time);
 
@@ -149,6 +153,28 @@ VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
   
   glBindVertexArray(0);
   glUseProgram(0);
+}
+
+VEC TM5_RndVertexCalculateMinBB( tm5VERTEX *Vertices, INT Size )
+{
+  INT i;
+  VEC Min = Vertices[0].Vec;
+
+  for (i = 1; i < Size; i++)
+    Min = VecMinVec(Min, Vertices[i].Vec);
+
+  return Min;
+}
+
+VEC TM5_RndVertexCalculateMaxBB( tm5VERTEX *Vertices, INT Size )
+{
+  INT i;
+  VEC Max = Vertices[0].Vec;
+
+  for (i = 1; i < Size; i++)
+    Max = VecMaxVec(Max, Vertices[i].Vec);
+
+  return Max;
 }
 
 /* End of 'rndbase.c' file */

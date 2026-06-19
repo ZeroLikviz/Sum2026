@@ -8,13 +8,12 @@
 #include "anim/anim.h"
 #include "def.h"
 
-tm5UNIT* TM5_UnitCreateFurry( VOID );
-tm5UNIT* TM5_UnitCreateObj( CHAR *Path, VEC Pos );
 tm5UNIT* TM5_UnitCreateFPS( VOID );
 tm5UNIT* TM5_UnitCreateControl( VOID );
 tm5UNIT* TM5_UnitCreateGame( VOID );
 tm5UNIT* TM5_UnitCreateSphere( VOID );
 tm5UNIT* TM5_UnitCreateHeightMap( CHAR *Filename );
 tm5UNIT* TM5_UnitCreateTextureRect( CHAR *Filename );
+tm5UNIT* TM5_UnitCreateG3DM( CHAR *Filename, BOOL Normalize );
 
 /* End of 'units.h' file */

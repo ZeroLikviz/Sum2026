@@ -100,7 +100,8 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
-# *.obj Let's keep those
+*.obj
+*.g3dm
 *.idb
 *.iobj
 *.pch

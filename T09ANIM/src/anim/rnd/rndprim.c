@@ -157,9 +157,13 @@ VOID TM5_RndPrimCreate( tm5PRIM *Primitive, tm5VERTEX *Vertices, INT NofV, INT *
 {
   memset(Primitive, 0, sizeof(tm5PRIM));
   
+  Primitive->MinBB = TM5_RndVertexCalculateMinBB(Vertices, NofV);
+  Primitive->MaxBB = TM5_RndVertexCalculateMaxBB(Vertices, NofV);
   Primitive->DrawMode = DrawMode;
   Primitive->Transform = MatrIdentity();
-  Primitive->NumOfElements = NofI;
+  Primitive->NumOfElements = NofV;
+  if (NofI != 0)
+    Primitive->NumOfElements = NofI;
   glGenBuffers(1, &Primitive->VertexBufferId);
   glGenBuffers(1, &Primitive->IndexBufferId);
   glGenVertexArrays(1, &Primitive->VertexArrayId);
@@ -187,111 +191,4 @@ VOID TM5_RndPrimCreate( tm5PRIM *Primitive, tm5VERTEX *Vertices, INT NofV, INT *
   glBindVertexArray(0);
 }
 
-VOID TM5_RndPrimLoad( tm5PRIM *Primitive, CHAR *FileName )
-{
-  FILE *F;
-  INT nv = 0, nf = 0;
-  tm5VERTEX *Vertices = NULL;
-  INT *Indexes = NULL;
-  static CHAR Buffer[2048];
-
-  memset(Primitive, 0, sizeof(tm5PRIM));
-
-  if ((F = fopen(FileName, "r")) == NULL)
-    return;
-
-  /* Count vertices and indices */
-  while (fgets(Buffer, sizeof(Buffer) - 1, F) != NULL)
-  {
-    if (Buffer[0] == 'v' && Buffer[1] == ' ')
-      nv++;
-    else if (Buffer[0] == 'f' && Buffer[1] == ' ')
-    {
-      INT n = 0;
-      CHAR *ptr = Buffer + 2, oldc = ' ';
-
-      while (*ptr != 0)
-      {
-        if (*ptr != ' ' && oldc == ' ')
-          n++;
-        oldc = *ptr++;
-      }
-
-      nf += n - 2;
-    }
-  }
-
-  rewind(F);
-  Vertices = malloc(nv * sizeof(tm5VERTEX));
-  Indexes = malloc(nf * 3 * sizeof(INT));
-  if (Vertices == NULL || Indexes == NULL)
-  {
-    fclose(F);
-    free(Vertices);
-    free(Indexes);
-    return;
-  }
-
-  nv = 0;
-  nf = 0;
-  while (fgets(Buffer, sizeof(Buffer) - 1, F) != NULL)
-  {
-    if (Buffer[0] == 'v' && Buffer[1] == ' ')
-    {
-      DBL x, y, z;
-
-      sscanf(Buffer + 2, "%lf%lf%lf", &x, &y, &z);
-      Vertices[nv].Color = VecSet4(1, 0, 0, 1); 
-      Vertices[nv++].Vec = VecSet3(x, y, z);
-    }
-    else if (Buffer[0] == 'f' && Buffer[1] == ' ')
-    {
-      INT n, n1, n2, n3;
-      INT fvn = 0;
-      CHAR *ptr = Buffer + 2, oldc = ' ';
-
-      while (*ptr != 0)
-      {
-        if (*ptr != ' ' && oldc == ' ')
-        {
-          sscanf(ptr, "%d", &n);
-          if (n > 0)
-            n--;
-          else
-            if (n < 0)
-              n += nv;
-
-          if (fvn == 0)
-            n1 = n;
-          else if (fvn == 1)
-            n2 = n;
-          else
-          {
-            n3 = n;
-
-            Indexes[nf++] = n1;
-            Indexes[nf++] = n2;
-            Indexes[nf++] = n3;
-
-            n2 = n3;
-          }
-          fvn++;
-        }
-        oldc = *ptr++;
-      }
-    }
-  }
-
-  TM5_RndPrimCalculateNormals(Vertices, nv, Indexes, nf);
-  TM5_RndPrimApplySun(Vertices, nv, VecSet3(4, 6, 3));
-  //TM5_RndPrimScale(Vertices, nv, 0.01);
-  //TM5_RndPrimStandartize(Vertices, nv);
-  TM5_RndPrimCreate(Primitive, Vertices, nv, Indexes, nf, TM5_RND_TRIANGLES);
-
-  fclose(F);
-  free(Vertices);
-  free(Indexes);
-
-  return;
-}
 /* End of 'rndprim.c' file */

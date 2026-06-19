@@ -23,10 +23,14 @@ struct tagtm5UNIT_GAME
 static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
 {
   tm5UNIT_GAME *rUnit = (tm5UNIT_GAME*)(Unit);
-  
+  tm5MATERIAL Material = TM5_RndMtlGetDef();
+
   memset(rUnit->States, 0, sizeof(BOOL) * 9);
   TM5_RndPrimCreateSquare(&rUnit->No, 2,  VecSet3(1, 0, 0));
   TM5_RndPrimCreateSquare(&rUnit->Yes, 2, VecSet3(0, 1, 0));
+  rUnit->Yes.MtlNumber = TM5_RndMtlAdd(&Material);
+  rUnit->No.MtlNumber = TM5_RndMtlAdd(&Material);
+
 }
 
 static VOID Close( tm5UNIT *Unit, tm5ANIM *Anim )
@@ -105,15 +109,12 @@ static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 tm5UNIT* TM5_UnitCreateGame( VOID )
 {
   tm5UNIT_GAME *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT_GAME));
-  tm5MATERIAL Material = TM5_RndMtlGetDef();
 
   NewUnit->Init = Init;
   NewUnit->Close = Close;
   NewUnit->Response = Response;
   NewUnit->Render = Render;
-  NewUnit->Yes.MtlNumber = TM5_RndMtlAdd(&Material);
-  NewUnit->No.MtlNumber = TM5_RndMtlAdd(&Material);
-
+  
   return (VOID *)NewUnit;
 }
 

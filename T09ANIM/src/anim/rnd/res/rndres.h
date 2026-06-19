@@ -8,9 +8,9 @@
 
 #include "def.h"
 
-#define TM5_MAX_SHADERS 8
-#define TM5_MAX_TEXTURES 128
-#define TM5_MAX_MATERIALS 32
+#define TM5_MAX_SHADERS 32
+#define TM5_MAX_TEXTURES 256
+#define TM5_MAX_MATERIALS 256
 #define TM5_STR_MAX 512
 
 typedef struct tagtm5SHADER
@@ -41,6 +41,13 @@ typedef struct tagtm5MATERIAL
   INT ShaderNumber;                /* Shader number in shader table */
 } tm5MATERIAL;
 
+/* Font description structure */
+typedef struct tagtm5FONT
+{
+  DWORD LineH, BaseH; /* Font line height and base line height in pixels */
+  FLT AdvanceX[256];  /* Every letter shift right value (0 if no letter present) */
+} tm5FONT;
+
 VOID TM5_RndResInit( VOID );
 VOID TM5_RndResClose( VOID );
 VOID TM5_RndResBindTexture( INT MtlNum, INT TexNum );
@@ -63,12 +70,20 @@ VOID TM5_RndMtlInit( VOID );
 VOID TM5_RndMtlClose( VOID );
 INT TM5_RndMtlAdd( tm5MATERIAL *Mtl );
 UINT TM5_RndMtlApply( INT MtlNo );
+tm5MATERIAL *TM5_RndMtlGet( INT mtlNo );
 
 extern tm5SHADER TM5_RndShaders[TM5_MAX_SHADERS];
 extern tm5TEXTURE TM5_RndTextures[TM5_MAX_TEXTURES];
 extern tm5MATERIAL TM5_RndMaterials[TM5_MAX_MATERIALS];
 extern INT TM5_RndShadersSize;
+extern INT TM5_RndMaterialsSize;
+extern INT TM5_RndTexturesSize;
 
+BOOL TM5_RndFntLoad( CHAR *FileName );
+VOID TM5_RndFntInit( VOID );
+VOID TM5_RndFntClose( VOID );
+VOID TM5_RndFntDraw3D( CHAR *Str, VEC Pos, FLT Size );
+VOID TM5_RndFntDraw( CHAR *Str, VEC Pos, FLT Size );
 /* END OF 'rndshd.c' FILE */
 
 #endif

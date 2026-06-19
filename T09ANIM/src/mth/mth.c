@@ -134,6 +134,20 @@ VEC4 Vec3to4( VEC Vec )
   return NewVec;
 }
 
+VEC VecMinVec( VEC Vec1, VEC Vec2 )
+{
+  return VecSet3(min(Vec1.X, Vec2.X), min(Vec1.Y, Vec2.Y), min(Vec1.Z, Vec2.Z));
+}
+
+VEC VecMaxVec( VEC Vec1, VEC Vec2 )
+{
+  return VecSet3(max(Vec1.X, Vec2.X), max(Vec1.Y, Vec2.Y), max(Vec1.Z, Vec2.Z));
+}
+
+FLT VecMaxValue( VEC Vec )
+{
+  return max(Vec.X, max(Vec.Y, Vec.Z));
+}
 /***  ////////////////
  ***  Matrix Functions
  ***/ ////////////////
@@ -434,6 +448,21 @@ MATR MatrScale1( FLT X )
       {0, X, 0, 0},
       {0, 0, X, 0},
       {0, 0, 0, 1}
+    }
+  };
+
+  return NewMatrix;
+}
+
+MATR MatrDescale1( FLT X )
+{
+  MATR NewMatrix =
+  {
+    {
+      {1 / X,     0,     0, 0},
+      {    0, 1 / X,     0, 0},
+      {    0,     0, 1 / X, 0},
+      {    0,     0,     0, 1}
     }
   };
 

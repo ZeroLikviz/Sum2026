@@ -236,6 +236,10 @@
 						RelativePath=".\src\anim\rnd\rndprim.c"
 						>
 					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndprims.c"
+						>
+					</File>
 					<Filter
 						Name="OpenGL"
 						>
@@ -247,6 +251,10 @@
 					<Filter
 						Name="Resources"
 						>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndfnt.c"
+							>
+						</File>
 						<File
 							RelativePath=".\src\anim\rnd\res\rndmtl.c"
 							>
@@ -289,7 +297,7 @@
 						>
 					</File>
 					<File
-						RelativePath=".\src\anim\units\furry_unit.c"
+						RelativePath=".\src\anim\units\g3dm_unit.c"
 						>
 					</File>
 					<File
@@ -302,10 +310,6 @@
 					</File>
 					<File
 						RelativePath=".\src\anim\units\ligths_outs_unit.c"
-						>
-					</File>
-					<File
-						RelativePath=".\src\anim\units\obj_unit.c"
 						>
 					</File>
 					<File

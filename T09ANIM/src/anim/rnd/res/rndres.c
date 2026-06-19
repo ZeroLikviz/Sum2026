@@ -9,12 +9,16 @@
 VOID TM5_RndResInit( VOID )
 {
   TM5_RndShdInit();
+  TM5_RndTexInit();
   TM5_RndMtlInit();
+  TM5_RndFntInit();
 }
 
 VOID TM5_RndResClose( VOID )
 {
+  TM5_RndFntClose();
   TM5_RndMtlClose();
+  TM5_RndTexClose();
   TM5_RndShdClose();
 }
 

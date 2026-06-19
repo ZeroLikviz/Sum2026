@@ -175,6 +175,7 @@ static VOID TM5_RndShdFree( UINT ProgId )
  
 VOID TM5_RndShdInit( VOID )
 {
+  INT TM5_RndShadersSize = 0;
   TM5_RndShdAdd("default");
 } /* End of 'TM5_RndResInit' function */
  

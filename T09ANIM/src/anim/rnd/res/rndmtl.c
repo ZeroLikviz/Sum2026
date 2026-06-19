@@ -128,15 +128,43 @@ UINT TM5_RndMtlApply( INT MtlNo )
     glUniform1f(loc, mtl->Ph);
   if ((loc = glGetUniformLocation(prg, "Transparency")) != -1)
     glUniform1f(loc, mtl->Transparency);
+  
+  if ((loc = glGetUniformLocation(prg, "MatrW")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, (VOID *)TM5_RndMatrView.Values);
+  if ((loc = glGetUniformLocation(prg, "FrameW")) != -1)
+    glUniform1f(loc, (FLT)TM5_RndFrameW);
+  if ((loc = glGetUniformLocation(prg, "FrameH")) != -1)
+    glUniform1f(loc, (FLT)TM5_RndFrameH);
 
   /* Set textures */
   for (i = 0; i < 8; i++)
   {
-    glActiveTexture(GL_TEXTURE0 + i + 1);
+    glActiveTexture(GL_TEXTURE0 + i);
     glBindTexture(GL_TEXTURE_2D, TM5_RndTextures[mtl->Textures[i]].TexId);
   }
 
+  for (i = 0; i < 8; i++)
+  {
+    CHAR Buffer[] = "AddonI0";
+    Buffer[6] = '0' + i;
+    if ((loc = glGetUniformLocation(prg, Buffer)) != -1)
+      glUniform1i(loc, TM5_RndShdAddonI[i]);
+    Buffer[5] = 'F';
+    if ((loc = glGetUniformLocation(prg, Buffer)) != -1)
+      glUniform1f(loc, TM5_RndShdAddonF[i]);
+    Buffer[5] = 'V';
+    if ((loc = glGetUniformLocation(prg, Buffer)) != -1)
+      glUniform3fv(loc, 1, &TM5_RndShdAddonV[i].X);
+  }
+
   return prg;
+}
+
+tm5MATERIAL *TM5_RndMtlGet( INT mtlNo )
+{
+  if (mtlNo < 0 || mtlNo >= TM5_MAX_MATERIALS)
+    return &TM5_RndMaterials[0];
+  return &TM5_RndMaterials[mtlNo];
 }
 
 /* End of 'rndmtl.c' file */

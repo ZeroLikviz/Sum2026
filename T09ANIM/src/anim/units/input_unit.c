@@ -139,7 +139,7 @@ static VOID ProcessKeyboard( tm5ANIM *Anim )
   /* General Keys */
   if (Anim->KeysClick[VK_ESCAPE])
     TM5_AnimExit();
-  if (Anim->KeysClick[' '])
+  if (Anim->KeysClick[VK_MENU])
     Anim->IsPause = !Anim->IsPause;
   if (Anim->KeysClick[VK_F11])
     TM5_AnimFlipFullScreen();
@@ -161,6 +161,17 @@ static VOID ProcessKeyboard( tm5ANIM *Anim )
     CamPos = VecAddVec(CamPos, VecScale(NewDir, -CamSpeed * KSpeedFactor));
   if (Anim->Keys['D'])
     CamPos = VecAddVec(CamPos, VecScale(VecNormalize(VecCross(NewDir, VecUp)),  CamSpeed * KSpeedFactor));
+
+  if (Anim->Keys[VK_UP])
+    CamAngleX += 0.5;
+  if (Anim->Keys[VK_DOWN])
+    CamAngleX -= 0.5;
+  if (Anim->Keys[VK_RIGHT])
+    CamDir = VecMulMatr(CamDir, MatrRotateY(-2));
+  if (Anim->Keys[VK_LEFT])
+    CamDir = VecMulMatr(CamDir, MatrRotateY( 2));
+  
+
 
   if (Anim->KeysClick['1'])
     CamSpeed = 0.04;
@@ -186,6 +197,8 @@ static VOID ProcessKeyboard( tm5ANIM *Anim )
 
 static VOID ProcessMouse( tm5ANIM *Anim )
 {
+  VEC Right = VecCross(CamDir, VecUp);
+
   if (Anim->KeysClick[VK_RBUTTON])
   {
     Anim->Mouse.Capture = TRUE;
@@ -199,16 +212,16 @@ static VOID ProcessMouse( tm5ANIM *Anim )
 
   if (Anim->Keys[VK_RBUTTON])
   {
-    VEC Right;
     CamDir = VecMulMatr(CamDir, MatrRotateY(-Anim->Mouse.dX * MSensitivity));
     Right = VecCross(CamDir, VecUp);
     CamAngleX += -Anim->Mouse.dY * MSensitivity;
-    if (CamAngleX < -89 || CamAngleX > 89)
-      CamAngleX = 89 * Sign(CamAngleX);
-    CamDir.Y = 0;
-    CamDir = VecNormalize(CamDir);
-    CamDir = VecRotateVec(Right, CamDir, CamAngleX);
   }
+  
+  if (CamAngleX < -89 || CamAngleX > 89)
+    CamAngleX = 89 * Sign(CamAngleX);
+  CamDir.Y = 0;
+  CamDir = VecNormalize(CamDir);
+  CamDir = VecRotateVec(Right, CamDir, CamAngleX);
 } /* End of 'ProcessMouse' function */
 
 
@@ -234,6 +247,8 @@ static VOID ProcessJoystick( tm5ANIM *Anim )
     PlaneMovement = !PlaneMovement;
   if (Anim->JButClick[5]) /* R1 */
     SlowDown = !SlowDown;
+  if (Anim->JButClick[7]) /* R2 */
+    Anim->IsPause = !Anim->IsPause;
 
   if (Anim->JBut[4])
   {
