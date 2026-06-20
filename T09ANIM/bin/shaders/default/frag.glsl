@@ -28,7 +28,7 @@ void main( void )
   float pdist = distance(CamLoc, DrawPos);
   
   Color += Ka;
-  Color += Kd * max(0, dot(Normal, ToLight)) / dist;
+  Color += Kd * max(0, dot(Normal, ToLight));
   Color += Ks * max(0, pow(dot(Reflected, ToLight), Ph + dist)) * 0.0;
 
   OutColor = mix(vec4(Color, 1), vec4(0, 0, 0, 1), clamp(pdist / 500.0, 0.0, 1.0));

@@ -16,11 +16,9 @@ layout(binding = 0) uniform sampler2D Tex;
 
 void main( void )
 {
-  if (!IsTexture0)
-    discard;
-
   vec4 tc = texture(Tex, DrawTexCoord);
-  if (tc.a < 0.030)
+  
+  if (tc.a < 0.01)
     discard;
 
   OutColor = vec4(tc.rgb, tc.a);

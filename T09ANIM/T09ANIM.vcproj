@@ -119,7 +119,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(OPENAL_DIR)Include;"
+				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(OPENAL_DIR)Include;.\src;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WINDOWS"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -293,6 +293,18 @@
 					Name="Units"
 					>
 					<File
+						RelativePath=".\src\anim\units\camsmooth_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\custards_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\forest_unit.c"
+						>
+					</File>
+					<File
 						RelativePath=".\src\anim\units\fps_unit.c"
 						>
 					</File>
@@ -318,6 +330,10 @@
 					</File>
 					<File
 						RelativePath=".\src\anim\units\texture_rect_unit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\units\tinky_unit.c"
 						>
 					</File>
 					<File

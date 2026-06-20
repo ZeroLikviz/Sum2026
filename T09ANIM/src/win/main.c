@@ -76,8 +76,11 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     TM5_AnimUnitAdd(TM5_UnitCreateG3DM("knuckles.g3dm", TRUE));
     */
     
-    TM5_AnimUnitAdd(TM5_UnitCreateG3DM("knuckles.g3dm", TRUE));
-    TM5_AnimUnitAdd(TM5_UnitCreateG3DM("city.g3dm", FALSE));
+    TM5_AnimUnitAdd(TM5_UnitCreateHeightMap("main.bmp", 128));
+    TM5_AnimUnitAdd(TM5_UnitCreateForest(1000, 128));
+    TM5_AnimUnitAdd(TM5_UnitCreateCustards(10, 128));
+    TM5_AnimUnitAdd(TM5_UnitCreateTinky());
+    TM5_AnimUnitAdd(TM5_UnitCreateCamsmooth());
     TM5_AnimUnitAdd(TM5_UnitCreateFPS());
     
     return 0;

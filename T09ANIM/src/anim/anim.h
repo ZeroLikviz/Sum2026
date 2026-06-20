@@ -14,6 +14,7 @@
 
 /* Type Declarations */
 typedef struct tagtm5MOUSE tm5MOUSE;
+typedef struct tagtm5CAM tm5CAM;
 typedef struct tagtm5ANIM tm5ANIM;
 typedef struct tagtm5UNIT tm5UNIT;
 
@@ -30,6 +31,15 @@ struct tagtm5MOUSE
   BOOL Visible;
 };
 
+struct tagtm5CAM
+{
+  VEC Pos;
+  VEC Dir;
+
+  BOOL HasNew;
+  VEC NewPos;
+};
+
 /* Animation Structure */
 struct tagtm5ANIM
 {
@@ -37,6 +47,9 @@ struct tagtm5ANIM
   HWND hWnd;                 /* Main window handler */
   HDC hDC;                   /* DC handler to draw to */
   INT W, H;                  /* Width and heigth parameters of window */
+
+  /* Camera */
+  tm5CAM Camera;
 
   /* Units */
   INT NumOfU;                /* Number of units */
@@ -74,6 +87,9 @@ struct tagtm5ANIM
   BOOL ProcessJoystick;      /* Bool whether joystick input should be processed */
   BOOL IsPause;              /* Is timer paused */
   BOOL IsActive;             /* Bool whether to do anything */
+
+  /* Height Map */
+  INT HeightMapId;
 };
 
 /* Unit Structure */

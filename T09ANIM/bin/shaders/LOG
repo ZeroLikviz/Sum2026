@@ -1,18 +1,17 @@
-font : VERT
-0(35) : error C0000: syntax error, unexpected '=', expecting "::" at token "="
+tree : VERT
+Error load file
+
+snow : FRAG
+0(21) : error C7011: implicit cast from "int" to "bool"
 
 
-font : VERT
-0(35) : error C0000: syntax error, unexpected '=', expecting "::" at token "="
+snow : FRAG
+0(34) : error C1068: too much data in type constructor
 
 
-font : VERT
-0(33) : error C1048: invalid character 'W' in swizzle "W"
-0(33) : error C1068: array index out of bounds
-
-
-font : VERT
-0(33) : error C1048: invalid character 'W' in swizzle "W"
-0(33) : error C1068: array index out of bounds
+snow : FRAG
+0(38) : error C1101: ambiguous overloaded function reference "clamp(float, int, float)"
+    (0) : gp5 float64_t clamp(float64_t, float64_t, float64_t)
+    (0) : float clamp(float, float, float)
 
 

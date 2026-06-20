@@ -89,7 +89,7 @@ BOOL TM5_RndFntLoad( CHAR *FileName )
  */
 VOID TM5_RndFntInit( VOID )
 {
-  TM5_RndFntLoad("bin/fonts/font.g3dm");
+  TM5_RndFntLoad("bin/fonts/font.g3df");
 } /* End of 'TM5_RndFntInit' function */
 
 /* Deinit font subsystem function.
@@ -106,38 +106,13 @@ VOID TM5_RndFntClose( VOID )
   memset(&TM5_RndFntFont, 0, sizeof(TM5_RndFntFont));
 } /* End of 'TM5_RndFntInit' function */
 
-/* Draw screen space string function.
- * ARGUMENTS:
- *   - string to draw:
- *       CHAR *Str;
- *   - draw position:
- *       VEC Pos;
- *   - font size:
- *      FLT Size;
- * RETURNS: None.
- */
-
-VOID TM5_RndFntDraw3D( CHAR *Str, VEC Pos, FLT Size )
-{
-  VEC Start = Pos;
- 
-  while (*Str != 0)
-  {
-    if (*Str == '\n')
-      Pos.X = Start.X, Pos.Y -= Size;
-    else if (TM5_RndFntFont.AdvanceX[(UCHAR)*Str] != 0)
-    {
-      TM5_RndPrimDraw(&TM5_RndFntChars[(UCHAR)*Str],
-        MatrMulMatr(MatrScale1(Size), MatrTranslate(Pos)));
-      Pos.X += TM5_RndFntFont.AdvanceX[(UCHAR)*Str] * Size;
-    }
-    Str++;
-  }
-}
-
 VOID TM5_RndFntDraw( CHAR *Str, VEC Pos, FLT Size )
 {
   VEC Start = Pos;
+  Start.Z = 0;
+  Pos.Z = 0;
+
+  glDisable(GL_DEPTH_TEST);
 
   if (Size <= 0)
     Size = TM5_RndFntFont.LineH;
@@ -145,15 +120,17 @@ VOID TM5_RndFntDraw( CHAR *Str, VEC Pos, FLT Size )
   while (*Str != 0)
   {
     if (*Str == '\n')
-      Pos.X = Start.X, Pos.Y -= Size;
+      Pos.X = Start.X, Pos.Y -= 1.0;
     else if (TM5_RndFntFont.AdvanceX[(UCHAR)*Str] != 0)
     {
       TM5_RndPrimDraw(&TM5_RndFntChars[(UCHAR)*Str],
-        MatrMulMatr(MatrScale1(Size), MatrTranslate(Pos)));
-      Pos.X += TM5_RndFntFont.AdvanceX[(UCHAR)*Str] * Size;
+        MatrMulMatr(MatrTranslate(Pos), MatrScale1(Size)));
+      Pos.X += TM5_RndFntFont.AdvanceX[(UCHAR)*Str];
     }
     Str++;
   }
+
+  glEnable(GL_DEPTH_TEST);
 } /* End of 'TM5_RndFntDraw' function */
 
 /* END OF 'rndfnt.c' FILE */

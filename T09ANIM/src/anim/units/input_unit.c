@@ -296,6 +296,11 @@ static VOID Response( tm5UNIT *Unit, tm5ANIM *Anim )
   if (!Anim->IsActive || !Anim->ProcessInput)
     return;
 
+  if (Anim->Camera.HasNew)
+  {
+    CamPos = Anim->Camera.NewPos;
+    Anim->Camera.HasNew = FALSE;
+  }
   UpdateKeyboard(Anim);
   UpdateMouse(Anim);
   UpdateJoystick(Anim);
@@ -306,6 +311,9 @@ static VOID Response( tm5UNIT *Unit, tm5ANIM *Anim )
     ProcessMouse(Anim);
   if (Anim->ProcessJoystick)
     ProcessJoystick(Anim);
+
+  Anim->Camera.Pos = CamPos;
+  Anim->Camera.Dir = CamDir;
 }
 
 tm5UNIT* TM5_UnitCreateControl( VOID )

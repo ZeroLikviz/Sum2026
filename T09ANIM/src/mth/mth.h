@@ -64,6 +64,9 @@ VEC Vec4to3( VEC4 Vec );
 VEC VecMinVec( VEC Vec1, VEC Vec2 );
 VEC VecMaxVec( VEC Vec1, VEC Vec2 );
 FLT VecMaxValue( VEC Vec );
+VEC VecMix( VEC Vec1, VEC Vec2, FLT Val );
+FLT Mix( FLT A, FLT B, FLT F );
+FLT Clamp( FLT X, FLT Min, FLT Max );
 
 
 /***  ////////////////

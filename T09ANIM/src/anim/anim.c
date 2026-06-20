@@ -24,6 +24,11 @@ VOID TM5_AnimInit( HWND hWnd )
   TM5_Animation.hWnd = hWnd;
   TM5_Animation.hDC = TM5_hRndDC;
   
+  TM5_Animation.Camera.Pos = VecSet3(0, 0, 0);
+  TM5_Animation.Camera.Dir = VecSet3(0, 0, 0);
+  TM5_Animation.Camera.NewPos = VecSet3(0, 0, 0);
+  TM5_Animation.Camera.HasNew = FALSE;
+
   TM5_Animation.ProcessInput    = TRUE;
   TM5_Animation.ProcessKeyboard = TRUE;
   TM5_Animation.ProcessMouse    = TRUE;

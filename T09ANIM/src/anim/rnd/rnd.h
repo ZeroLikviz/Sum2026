@@ -116,7 +116,7 @@ VOID TM5_RndGridFree( tm5GRID *Grid );
 VOID TM5_RndPrimFromGrid( tm5PRIM *Primitive, tm5GRID *Grid );
 VOID TM5_RndGridAutoNormals( tm5GRID *Grid );
 VOID TM5_RndGridCreateSphere( tm5GRID *Grid, DBL R, INT W, INT H );
-VOID TM5_RndGridCreateHeightMap( tm5GRID *Grid, CHAR *Filename );
+VOID TM5_RndGridCreateHeightMap( tm5GRID *Grid, CHAR *Filename, FLT Size );
 
 /* Prims Functions */
 

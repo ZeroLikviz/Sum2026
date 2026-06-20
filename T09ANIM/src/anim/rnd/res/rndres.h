@@ -82,7 +82,6 @@ extern INT TM5_RndTexturesSize;
 BOOL TM5_RndFntLoad( CHAR *FileName );
 VOID TM5_RndFntInit( VOID );
 VOID TM5_RndFntClose( VOID );
-VOID TM5_RndFntDraw3D( CHAR *Str, VEC Pos, FLT Size );
 VOID TM5_RndFntDraw( CHAR *Str, VEC Pos, FLT Size );
 /* END OF 'rndshd.c' FILE */
 

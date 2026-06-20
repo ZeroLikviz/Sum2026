@@ -1,5 +1,5 @@
 /**/
-#version 330
+#version 460
 
 layout(location = 0) in vec3 InPosition;
 layout(location = 1) in vec2 InTexCoord;
@@ -32,8 +32,8 @@ mat4 MatrOrtho( float Left, float Right, float Bottom, float Top, float Near, fl
 
 void main( void )
 {
-  //gl_Position = MatrOrtho(0, FrameW, -FrameH, 0, -100, 100) * MatrW * vec4(InPosition, 1);
-  gl_Position = MatrWVP * vec4(InPosition, 1);
+  gl_Position = MatrOrtho(0, FrameW, -FrameH, 0, -100, 100) * MatrW * vec4(InPosition, 1);
+  //  gl_Position = MatrWVP * vec4(InPosition, 1);
   DrawColor = vec4(1, 1, 1, 1);
   DrawTexCoord = InTexCoord;
 }

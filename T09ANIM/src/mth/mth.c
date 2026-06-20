@@ -148,6 +148,26 @@ FLT VecMaxValue( VEC Vec )
 {
   return max(Vec.X, max(Vec.Y, Vec.Z));
 }
+
+VEC VecMix( VEC Vec1, VEC Vec2, FLT Val )
+{
+  Vec1.X = Vec1.X * (1.0 - Val) + Vec2.X * Val;
+  Vec1.Y = Vec1.Y * (1.0 - Val) + Vec2.Y * Val;
+  Vec1.Z = Vec1.Z * (1.0 - Val) + Vec2.Z * Val;
+
+  return Vec1;
+}
+
+FLT Mix( FLT A, FLT B, FLT F )
+{
+  return A * (1.0 - F) + B * F;
+}
+
+FLT Clamp( FLT X, FLT Min, FLT Max )
+{
+  return min(max(X, Min), Max);
+}
+
 /***  ////////////////
  ***  Matrix Functions
  ***/ ////////////////

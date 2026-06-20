@@ -9,23 +9,19 @@
 
 #include "anim/units/units.h"
 
-static VOID Init( tm5UNIT *Unit, tm5ANIM *Anim )
-{
-  //TM5_RndFntLoad("bin/fonts/font.g3dm");
-}
-
 static VOID Render( tm5UNIT *Unit, tm5ANIM *Anim )
 {
   static CHAR Buffer[128];
-  
-  TM5_RndFntDraw3D(Buffer, VecSet3(0, 0, 0), sprintf(Buffer, "FPS: %3.1f", Anim->FPS));
+
+  sprintf(Buffer, "FPS: %3.1f\nPOS: %3.2f %3.2f %3.2f",
+    Anim->FPS, Anim->Camera.Pos.X, Anim->Camera.Pos.Y, Anim->Camera.Pos.Z);
+  TM5_RndFntDraw(Buffer, VecSet3(0, 0, 0), 30.0f);
 }
 
 tm5UNIT* TM5_UnitCreateFPS( VOID )
 {
   tm5UNIT *NewUnit = TM5_AnimCreateUnit(sizeof(tm5UNIT));
 
-  NewUnit->Init = Init;
   NewUnit->Render = Render;
 
   return (VOID *)NewUnit;

@@ -83,7 +83,7 @@ VOID TM5_RndCopyFrame( VOID )
 
 VOID TM5_RndStart( VOID )
 {
-  VEC4 ClearColor = {0.8, 0.8, 0.8, 1};
+  VEC4 ClearColor = {0.0, 0.0, 0.0, 1};
   FLT DepthClearValue = 1;
 
   glClearBufferfv(GL_COLOR, 0, &ClearColor.X);
@@ -141,7 +141,7 @@ VOID TM5_RndPrimDraw( tm5PRIM *Primitive, MATR World )
   if ((loc = glGetUniformLocation(ProgId, "MatrInv")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, (VOID *)inv.Values);
   if ((loc = glGetUniformLocation(ProgId, "MatrW")) != -1)
-    glUniformMatrix4fv(loc, 1, FALSE, (VOID *)TM5_RndMatrView.Values);
+    glUniformMatrix4fv(loc, 1, FALSE, (VOID *)World.Values);
   if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
     glUniform1f(loc, Time);
 
