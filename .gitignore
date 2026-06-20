@@ -101,7 +101,7 @@ StyleCopReport.xml
 *.ilk
 *.meta
 *.obj
-*.g3dm
+#*.g3dm
 *.idb
 *.iobj
 *.pch
